@@ -34,6 +34,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,4 +43,29 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+ */
 
+// Function to create a TimePicker with a given time state
+@Composable
+fun TimePickerItem(
+    timeState: MutableState<TimePickerState>,
+    modifier: Modifier = Modifier
+) {
+    TimePicker(
+        state = timeState.value,
+        onValueChange = { timeState.value = it },
+        modifier = modifier
+    )
+}
+
+// Function to create a Card with a title, TimePicker, and ActionButton
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerCard(
+    title: String,
+    timeState: MutableState<TimePickerState>,
+    onAction: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        shape = RoundedCornerShape(8.
