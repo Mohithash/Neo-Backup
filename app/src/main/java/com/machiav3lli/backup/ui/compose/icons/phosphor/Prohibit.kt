@@ -1,10 +1,14 @@
-package com.machiav3lli.backup.ui.compose.icons.phosphor
+// Phosphor.kt
 
+// Prohibit icon for Phosphor icon set
+// Returns an ImageVector object representing the Prohibit icon
+// This icon is a circle with a diagonal line going through it, symbolizing a restriction or prohibition
+
+package com.machiav3lli.backup.ui.compose.icons.phosphor
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
@@ -16,11 +20,16 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// Prohibit property returns an ImageVector object
+// The object is built using the Builder class and the path function
 val Phosphor.Prohibit: ImageVector
     get() {
+        // If the ImageVector object has already been built, return it
         if (_prohibit != null) {
             return _prohibit!!
         }
+
+        // Build the ImageVector object
         _prohibit = Builder(
             name = "Prohibit",
             defaultWidth = 24.0.dp,
@@ -28,6 +37,7 @@ val Phosphor.Prohibit: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the path for the Prohibit icon using path function
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
@@ -38,34 +48,4 @@ val Phosphor.Prohibit: ImageVector
                 arcToRelative(2.3f, 2.3f, 0.0f, false, false, -0.7f, 0.7f)
                 arcToRelative(2.3f, 2.3f, 0.0f, false, false, -0.7f, 0.7f)
                 arcToRelative(103.9f, 103.9f, 0.0f, false, false, 147.0f, 147.0f)
-                arcToRelative(2.3f, 2.3f, 0.0f, false, false, 0.7f, -0.7f)
-                arcTo(2.3f, 2.3f, 0.0f, false, false, 202.2f, 200.8f)
-                close()
-                moveTo(216.0f, 128.0f)
-                arcToRelative(87.9f, 87.9f, 0.0f, false, true, -20.4f, 56.3f)
-                lineTo(71.7f, 60.4f)
-                arcTo(88.0f, 88.0f, 0.0f, false, true, 216.0f, 128.0f)
-                close()
-                moveTo(40.0f, 128.0f)
-                arcTo(87.9f, 87.9f, 0.0f, false, true, 60.4f, 71.7f)
-                lineTo(184.3f, 195.6f)
-                arcTo(88.0f, 88.0f, 0.0f, false, true, 40.0f, 128.0f)
-                close()
-            }
-        }
-            .build()
-        return _prohibit!!
-    }
-
-private var _prohibit: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun ProhibitPreview() {
-    Image(
-        Phosphor.Prohibit,
-        null
-    )
-}
+                arcToRelative(2.3f, 2.3f, 0.0f, false, false, 0.7
