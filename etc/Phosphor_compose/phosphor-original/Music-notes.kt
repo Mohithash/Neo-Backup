@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// Define the Music-notes ImageVector using the Builder pattern
 val Phosphor.`Music-notes`: ImageVector
     get() {
         if (`_music-notes` != null) {
@@ -20,11 +21,13 @@ val Phosphor.`Music-notes`: ImageVector
             name = "Music-notes", defaultWidth = 256.0.dp, defaultHeight =
             256.0.dp, viewportWidth = 256.0f, viewportHeight = 256.0f
         ).apply {
+            // Define the path that describes the shape of the music notes
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // Draw the staff lines and music notes
                 moveTo(212.9f, 25.7f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, false, -6.8f, -1.5f)
                 lineToRelative(-128.0f, 32.0f)
@@ -40,23 +43,6 @@ val Phosphor.`Music-notes`: ImageVector
                 verticalLineTo(32.0f)
                 arcTo(7.8f, 7.8f, 0.0f, false, false, 212.9f, 25.7f)
                 close()
+                // Draw the first and second notes
                 moveTo(52.0f, 224.0f)
-                arcToRelative(20.0f, 20.0f, 0.0f, true, true, 20.0f, -20.0f)
-                arcTo(20.1f, 20.1f, 0.0f, false, true, 52.0f, 224.0f)
-                close()
-                moveTo(88.0f, 101.8f)
-                verticalLineTo(70.2f)
-                lineToRelative(112.0f, -28.0f)
-                verticalLineTo(73.8f)
-                close()
-                moveTo(180.0f, 192.0f)
-                arcToRelative(20.0f, 20.0f, 0.0f, true, true, 20.0f, -20.0f)
-                arcTo(20.1f, 20.1f, 0.0f, false, true, 180.0f, 192.0f)
-                close()
-            }
-        }
-            .build()
-        return `_music-notes`!!
-    }
-
-private var `_music-notes`: ImageVector? = null
+                arcToRelative(20.0f, 20.0f, 0.0f, true, true, 20
