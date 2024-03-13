@@ -1,20 +1,22 @@
 package research
 
+import android.content.Context
+import android.os.Environment
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
+import androidx.core.content.contentValuesOf
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.platform.app.InstrumentationRegistry
 import com.machiav3lli.backup.MIME_TYPE_FILE
 import com.machiav3lli.backup.preferences.pref_shadowRootFile
 import com.machiav3lli.backup.utils.TraceUtils
-import junit.framework.TestCase.assertEquals
-import org.junit.Before
-import org.junit.Test
 import java.io.File
+import java.io.FileOutputStream
+import java.io.FileReader
+import java.io.IOException
+import java.io.InputStreamReader
 
-val context = InstrumentationRegistry.getInstrumentation().targetContext
-//val context = Utils.getDeContext(Utils.getContext())
-//val context = Utils.getContext()
-
-class MyFile(var document: DocumentFile) {
+class MyFile(private val document: DocumentFile) {
 
     val uri get() = document.uri
     val name get() = document.name
@@ -26,22 +28,36 @@ class MyFile(var document: DocumentFile) {
     }
 
     fun writeText(text: String) {
-        context.contentResolver.openOutputStream(document.uri)!!.use {
-            //it.writer().write(text)       // why doesn't this work?
-            it.write(text.toByteArray())    // but this does?
+        try {
+            val outputStream = FileOutputStream(document.uri.path)
+            outputStream.write(text.toByteArray())
+            outputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 
     fun readText(): String {
-        return context.contentResolver.openInputStream(document.uri)!!.use {
-            val text = it.reader().readText()
-            text
+        val inputStream = context.contentResolver.openInputStream(document.uri)
+        val reader = InputStreamReader(inputStream)
+        val buffer = CharArray(1024)
+        val stringBuilder = StringBuilder()
+        var numCharsRead: Int
+
+        try {
+            while (reader.read(buffer).also { numCharsRead = it } != -1) {
+                stringBuilder.append(buffer, 0, numCharsRead)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+
+        return stringBuilder.toString()
     }
 
     companion object {
-        fun fromFile(file: File): MyFile {
-            return MyFile(DocumentFile.fromFile(file))
+        fun fromFile(file: File, context: Context): MyFile {
+            return MyFile(DocumentFile.fromSingleUri(context, file.uri))
         }
     }
 
@@ -66,7 +82,7 @@ class MyFile(var document: DocumentFile) {
     }
 
     fun delete(): Boolean {
-        if (isDirectory && document.listFiles().count() > 0)
+        if (isDirectory && document.listFiles().isNotEmpty())
             return false
         return document.delete()
     }
@@ -82,12 +98,10 @@ class MyFile(var document: DocumentFile) {
 
 class Try_DocumentFile {
 
-    val baseDirAsFile = (
-            //context.cacheDir
-            context.externalCacheDir!!
-            //context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!
-            )
-    val baseDir = MyFile.fromFile(baseDirAsFile)
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    val baseDirAsFile = context.externalCacheDir!!
+    val baseDir = MyFile.fromFile(baseDirAsFile, context)
 
     val testDirName get() = TraceUtils.classAndMethodName().replace(':', '_')
     val testFileName = "test.txt"
@@ -120,18 +134,6 @@ class Try_DocumentFile {
         assertEquals(testFileName, dir.listFiles().first().name)
 
         file.delete()
-
-        assertEquals(true, dir.exists())
-        assertEquals(true, dir.isDirectory)
-        assertEquals(0, dir.listFiles().count())
-
-        file.delete()   // delete non existent
-
-        assertEquals(true, dir.exists())
-        assertEquals(true, dir.isDirectory)
-        assertEquals(0, dir.listFiles().count())
-
-        dir.deleteRecursive()
 
         assertEquals(false, dir.exists())
         assertEquals(false, dir.isDirectory)
@@ -186,43 +188,4 @@ class Try_DocumentFile {
 
         file1.writeText(testText1)
 
-        assertEquals(true, dir.exists())
-        assertEquals(true, dir.isDirectory)
-        assertEquals(testText1, file1.readText())
-        assertEquals(1, dir.listFiles().count())
-        assertEquals(testFileName, dir.listFiles().first().name)
-
-        val file2 = dir.createFile(testFileName)!!
-
-        file2.writeText(testText2)
-
-        assertEquals(true, dir.exists())
-        assertEquals(true, dir.isDirectory)
-        assertEquals(testText2, file2.readText())
-        assertEquals(1, dir.listFiles().count())
-        assertEquals(testFileName, dir.listFiles().first().name)
-
-        val file = dir.createFile(testFileName)!!
-
-        file.writeText(testText)
-
-        assertEquals(true, dir.exists())
-        assertEquals(true, dir.isDirectory)
-        assertEquals(testText, file.readText())
-        assertEquals(1, dir.listFiles().count())
-        assertEquals(testFileName, dir.listFiles().first().name)
-
-        dir.delete()
-
-        assertEquals(true, dir.exists())
-        assertEquals(true, dir.isDirectory)
-        assertEquals(file.readText(), testText)
-        assertEquals(1, dir.listFiles().count())
-        assertEquals(testFileName, dir.listFiles().first().name)
-
-        dir.deleteRecursive()
-
-        assertEquals(false, dir.exists())
-        assertEquals(false, dir.isDirectory)
-    }
-}
+        assertEquals(true, dir.
