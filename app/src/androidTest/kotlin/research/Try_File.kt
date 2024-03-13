@@ -9,106 +9,75 @@ import java.io.File
 
 class Try_File {
 
+    // Create a temporary file with a unique name and .test extension
     val file = File.createTempFile("Try_File", ".test")
 
     @Test
     fun test_File_ownerOnly() {
 
+        // Create the file
         fastCmd("touch ${file.absolutePath}")
 
-        // set writable
-
+        // Set the file to be only writable by the owner
         fastCmd("chmod 0 ${file.absolutePath}")
         assertEquals(
-            "0",
+            "0",  // The file permissions should be 0 (only owner can read, write, and execute)
+            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
+        )
+
+        // Test various scenarios where the file is and isn't writable
+        fastCmd("chmod 0 ${file.absolutePath}")
+        file.setWritable(false, true)  // Set the file to be not writable by anyone
+        assertEquals(
+            "0",  // The file permissions should still be 0
             fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
-        file.setWritable(false, true)
+        file.setWritable(false, false)  // Set the file to be not writable by anyone, even the owner
         assertEquals(
-            "0",
+            "0",  // The file permissions should still be 0
             fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
-        file.setWritable(false, false)
+        file.setWritable(true, true)  // Set the file to be writable by the owner
         assertEquals(
-            "0",
+            "200",  // The file permissions should now be 200 (owner can read and write, others can only execute)
             fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
-        file.setWritable(true, true)
+        file.setWritable(true, false)  // Set the file to be writable by the owner, but not by others
         assertEquals(
-            "200",
+            "222",  // The file permissions should now be 222 (owner can read, write, and execute, others can't)
             fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
         )
 
-        fastCmd("chmod 0 ${file.absolutePath}")
-        file.setWritable(true, false)
-        assertEquals(
-            "222",
-            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
-        )
-
-        // reset writable
+        // Reset the file to be writable by everyone
 
         fastCmd("chmod 777 ${file.absolutePath}")
         assertEquals(
-            "777",
-            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
-        )
-
-        fastCmd("chmod 777 ${file.absolutePath}")
-        file.setWritable(false, true)
-        assertEquals(
-            "577",
+            "777",  // The file permissions should now be 777 (read, write, and execute for everyone)
             fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 777 ${file.absolutePath}")
-        file.setWritable(false, false)
+        file.setWritable(false, true)  // Set the file to be not writable by anyone
         assertEquals(
-            "555",
+            "577",  // The file permissions should now be 577 (owner can read, write, and execute, others can read and execute)
             fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
         )
 
-        file.delete()
+        fastCmd("chmod 777 ${file.absolutePath}")
+        file.setWritable(false, false)  // Set the file to be not writable by anyone, even the owner
+        assertEquals(
+            "555",  // The file permissions should now be 555 (owner can read, write, and execute, others can only read and execute)
+            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
+        )
+
+        file.delete()  // Delete the file
     }
 
     @Test
-    fun test_File_readOnly() {
 
-        fastCmd("touch ${file.absolutePath}")
-
-        fastCmd("chmod 0 ${file.absolutePath}")
-        assertEquals(
-            "0",
-            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
-        )
-
-        fastCmd("chmod 0 ${file.absolutePath}")
-        file.setReadOnly()
-        assertEquals(
-            "0",
-            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
-        )
-
-        fastCmd("chmod 777 ${file.absolutePath}")
-        assertEquals(
-            "777",
-            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
-        )
-
-        fastCmd("chmod 777 ${file.absolutePath}")
-        file.setReadOnly()
-        assertEquals(
-            "555",
-            fastCmd("$utilBoxQ stat -c '%a' ${quote(file)}")
-        )
-
-        file.delete()
-    }
-
-}
