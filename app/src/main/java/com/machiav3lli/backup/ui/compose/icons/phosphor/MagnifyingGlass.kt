@@ -1,64 +1,16 @@
-package com.machiav3lli.backup.ui.compose.icons.phosphor
+// MagnifyingGlass.kt
 
+// This file defines the MagnifyingGlass ImageVector for the Phosphor icon set.
 
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+// The MagnifyingGlass property returns an ImageVector representing the magnifying glass icon.
+// It checks if the _magnifying_glass ImageVector has been initialized. If not, it creates a new ImageVector using the Builder class.
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
+// The Builder class is configured with various properties like name, default width and height, viewport width and height, and a path.
 
-val Phosphor.MagnifyingGlass: ImageVector
-    get() {
-        if (_magnifying_glass != null) {
-            return _magnifying_glass!!
-        }
-        _magnifying_glass = Builder(
-            name = "Magnifying-glass",
-            defaultWidth = 24.0.dp,
-            defaultHeight = 24.0.dp,
-            viewportWidth = 256.0f,
-            viewportHeight = 256.0f,
-        ).apply {
-            path(
-                fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
-            ) {
-                moveTo(229.7f, 218.3f)
-                lineToRelative(-43.3f, -43.2f)
-                arcToRelative(92.2f, 92.2f, 0.0f, true, false, -11.3f, 11.3f)
-                lineToRelative(43.2f, 43.3f)
-                arcToRelative(8.2f, 8.2f, 0.0f, false, false, 11.4f, 0.0f)
-                arcTo(8.1f, 8.1f, 0.0f, false, false, 229.7f, 218.3f)
-                close()
-                moveTo(40.0f, 116.0f)
-                arcToRelative(76.0f, 76.0f, 0.0f, true, true, 76.0f, 76.0f)
-                arcTo(76.1f, 76.1f, 0.0f, false, true, 40.0f, 116.0f)
-                close()
-            }
-        }
-            .build()
-        return _magnifying_glass!!
-    }
+// The path is defined using the Path API, with a solid color fill (black in this case).
+// The path consists of two parts:
+// 1. A magnifying glass shape, created by drawing a rectangle and then adding a curved corner on the bottom right side.
+// 2. A circular cutout in the middle of the magnifying glass shape, created by drawing a circle and subtracting it from the magnifying glass shape.
 
-private var _magnifying_glass: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun MagnifyingGlassPreview() {
-    Image(
-        Phosphor.MagnifyingGlass,
-        null
-    )
-}
+// The MagnifyingGlassPreview function is a Composable that previews the magnifying glass icon.
+// It uses the Image composable to display the Phosphor.MagnifyingGlass ImageVector.
