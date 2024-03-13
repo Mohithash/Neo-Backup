@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.dbs.entity
 
 import androidx.room.ColumnInfo
@@ -59,74 +60,12 @@ data class Schedule(
     @ColumnInfo(defaultValue = "0")
     val enabledFilter: Int = SPECIAL_FILTER_ALL,
 
-    val timeToRun: Long = 0,        //TODO should this be in hashCode and equals ???
+    val timeToRun: Long = 0,
 
     val customList: Set<String> = setOf(),
 
     val blockList: Set<String> = setOf(),
 ) {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val schedule = other as Schedule
-        return id == schedule.id
-                && name == schedule.name
-                && enabled == schedule.enabled
-                && timeHour == schedule.timeHour
-                && timeMinute == schedule.timeMinute
-                && interval == schedule.interval
-                && timePlaced == schedule.timePlaced
-                && filter == schedule.filter
-                && mode == schedule.mode
-                && launchableFilter == schedule.launchableFilter
-                && updatedFilter == schedule.updatedFilter
-                && latestFilter == schedule.latestFilter
-                && enabledFilter == schedule.enabledFilter
-                && customList == schedule.customList
-                && blockList == schedule.blockList
-    }
-
-    override fun hashCode(): Int {
-        var hash = 7
-        hash = 31 * hash + id.toInt()
-        hash = 31 * hash + name.hashCode()
-        hash = 31 * hash + if (enabled) 1 else 0
-        hash = 31 * hash + timeHour
-        hash = 31 * hash + timeMinute
-        hash = 31 * hash + interval
-        hash = 31 * hash + timePlaced.toInt()
-        hash = 31 * hash + filter.hashCode()
-        hash = 31 * hash + mode.hashCode()
-        hash = 31 * hash + launchableFilter.hashCode()
-        hash = 31 * hash + updatedFilter.hashCode()
-        hash = 31 * hash + latestFilter.hashCode()
-        hash = 31 * hash + enabledFilter.hashCode()
-        hash = 31 * hash + customList.hashCode()
-        hash = 31 * hash + blockList.hashCode()
-        return hash
-    }
-
-    override fun toString(): String {
-        return "Schedule{" +
-                "id=" + id +
-                ", name=" + name +
-                ", enabled=" + enabled +
-                ", timeHour=" + timeHour +
-                ", timeMinute=" + timeMinute +
-                ", interval=" + interval +
-                ", timePlaced=" + timePlaced +
-                ", timeToRun=" + timeToRun +
-                ", filter=" + filter +
-                ", mode=" + mode +
-                ", launchableFilter=" + launchableFilter +
-                ", updatedFilter=" + updatedFilter +
-                ", latestFilter=" + latestFilter +
-                ", enabledFilter=" + enabledFilter +
-                ", customList=" + customList +
-                ", blockList=" + blockList +
-                '}'
-    }
 
     val specialFilter: SpecialFilter
         get() = SpecialFilter(
@@ -200,15 +139,5 @@ data class Schedule(
 
     fun toSerialized() = OABX.toSerialized(OABX.schedSerializer, this)
 
-    companion object {
-
-        fun fromSerialized(serialized: String) = OABX.fromSerialized<Schedule>(serialized)
-
-        @RenameColumn(
-            tableName = "Schedule",
-            fromColumnName = "timeUntilNextEvent",
-            toColumnName = "timeToRun"
-        )
-        class AutoMigration : AutoMigrationSpec {}
-    }
-}
+    fun copy(
+        id: Long =
