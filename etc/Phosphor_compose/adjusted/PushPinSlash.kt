@@ -1,26 +1,23 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
-
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
+// ImageVector interface represents a vector graphic that can be composable in Compose.
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
+
+// Builder is used to build an ImageVector object.
+import androidx.compose.ui.graphics.vector.Builder
+
+// Phosphor object contains a collection of ImageVector objects.
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// ImageVector for the PushPinSlash icon.
 val Phosphor.PushPinSlash: ImageVector
     get() {
+        // If the ImageVector object has already been created, return it.
         if (_push_pin_slash != null) {
             return _push_pin_slash!!
         }
+
+        // Create a new ImageVector object using the Builder.
         _push_pin_slash = Builder(
             name = "Push-pin-slash",
             defaultWidth = 24.0.dp,
@@ -28,11 +25,13 @@ val Phosphor.PushPinSlash: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Add a path to the ImageVector object.
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // Path data for the PushPinSlash icon.
                 moveTo(53.9f, 34.6f)
                 arcTo(8.0f, 8.0f, 0.0f, false, false, 42.1f, 45.4f)
                 lineTo(73.5f, 80.0f)
@@ -58,38 +57,13 @@ val Phosphor.PushPinSlash: ImageVector
                 curveToRelative(25.1f, -20.2f, 47.9f, -9.6f, 48.8f, -9.1f)
                 arcToRelative(10.0f, 10.0f, 0.0f, false, false, 3.3f, 0.8f)
                 lineToRelative(67.7f, 74.5f)
-                curveTo(163.7f, 191.2f, 153.9f, 207.7f, 147.5f, 216.2f)
-                close()
-                moveTo(236.7f, 96.0f)
-                arcToRelative(15.9f, 15.9f, 0.0f, false, true, -4.7f, 11.3f)
-                lineToRelative(-41.4f, 41.4f)
+                curveToRelative(2.3f, 2.6f, 3.9f, 6.1f, 3.9f, 9.8f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, -5.7f, 2.4f)
                 arcToRelative(7.7f, 7.7f, 0.0f, false, true, -5.6f, -2.4f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, 0.0f, -11.3f)
-                lineTo(220.7f, 96.0f)
-                lineTo(160.0f, 35.3f)
-                lineToRelative(-38.0f, 38.0f)
-                arcTo(8.0f, 8.0f, 0.0f, true, true, 110.7f, 62.0f)
-                lineToRelative(38.0f, -38.0f)
+                lineTo(151.2f, 187.5f)
+                lineToRelative(-38.0f, -38.0f)
+                arcToRelative(8.0f, 8.0f, 0.0f, true, true, 11.3f, -11.3f)
+                lineToRelative(38.0f, 38.0f)
                 arcToRelative(16.1f, 16.1f, 0.0f, false, true, 22.6f, 0.0f)
-                lineTo(232.0f, 84.7f)
-                arcTo(15.9f, 15.9f, 0.0f, false, true, 236.7f, 96.0f)
-                close()
-            }
-        }
-            .build()
-        return _push_pin_slash!!
-    }
-
-private var _push_pin_slash: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun PushPinSlashPreview() {
-    Image(
-        Phosphor.PushPinSlash,
-        null
-    )
-}
+                lineTo
