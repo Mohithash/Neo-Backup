@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.utils
 
+// Import necessary classes and libraries
 import android.content.pm.PackageManager
 import android.text.format.Formatter
 import androidx.compose.runtime.Composable
@@ -43,8 +45,10 @@ import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
 import com.machiav3lli.backup.ui.compose.theme.ColorSystem
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
+import com.machiav3lli.backup.ui.compose.theme.ColorWarning
 import com.machiav3lli.backup.ui.item.InfoChipItem
 
+// Function to get statistics about the packages
 fun getStats(appsList: List<Package>): Triple<Int, Int, Int> {
     var backupsNumber = 0
     var updatedNumber = 0
@@ -57,6 +61,7 @@ fun getStats(appsList: List<Package>): Triple<Int, Int, Int> {
     return Triple(appsList.size, backupsNumber, updatedNumber)
 }
 
+// Function to get installed package information along with permissions
 fun PackageManager.getInstalledPackageInfosWithPermissions() =
     getInstalledPackages(0).mapNotNull {
         try {
@@ -67,9 +72,11 @@ fun PackageManager.getInstalledPackageInfosWithPermissions() =
         }
     }
 
+// Function to get AppExtras for a given package name
 fun List<AppExtras>.get(packageName: String) =
     find { it.packageName == packageName } ?: AppExtras(packageName)
 
+// Composable function to generate info chips for a package
 @Composable
 fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
@@ -117,12 +124,4 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
         flag = CHIP_SIZE_CACHE,
         text = stringResource(id = R.string.cache_size) + " " + Formatter.formatFileSize(
-            LocalContext.current,
-            storageStats?.cacheBytes ?: 0
-        ),
-    ),
-    if (this.apkSplits.isNotEmpty()) InfoChipItem(
-        flag = CHIP_SPLIT,
-        text = stringResource(id = R.string.split_apks),
-    ) else null
-)
+
