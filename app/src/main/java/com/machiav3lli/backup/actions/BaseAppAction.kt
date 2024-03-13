@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.actions
 
 import android.content.Context
@@ -31,18 +32,18 @@ import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.preferences.pref_restoreNoBackupData
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
-import com.topjohnwu.superuser.Shell
-import com.topjohnwu.superuser.ShellUtils
 import timber.log.Timber
 
 abstract class BaseAppAction protected constructor(
-    protected val context: Context,
-    protected val work: AppActionWork?,
-    protected val shell: ShellHandler
+    context: Context,
+    work: AppActionWork?,
+    shell: ShellHandler
 ) {
 
     protected val deviceProtectedStorageContext: Context =
         context.createDeviceProtectedStorageContext()
+
+    protected val shellHandler: ShellHandler = requireNotNull(shell)
 
     fun getBackupArchiveFilename(
         what: String,
@@ -105,90 +106,4 @@ abstract class BaseAppAction protected constructor(
                 return
             }
             preResults["$type-$packageName"]?.let { results ->
-                Timber.w("$type $packageName: postprocess pre-results: ${results.joinToString(" ")}")
-                runAsRoot(
-                    "sh $script post-$type $utilBoxQ ${prepostOptions(type)} $packageName ${applicationInfo.uid} ${
-                        results.joinToString(
-                            " "
-                        )
-                    }"
-                )
-                preResults.remove("$type-$packageName")
-            } ?: run {
-                Timber.w("$type $packageName: no pre-results")
-                runAsRoot("sh $script $packageName ${applicationInfo.uid}")
-            }
-        } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("$type $packageName: cannot postprocess: package does not exist")
-        } catch (e: ShellCommandFailedException) {
-            Timber.w("$type $packageName: cannot postprocess: ${e.shellResult.err.joinToString(" ")}")
-        } catch (e: Throwable) {
-            LogsHandler.unexpectedException(e)
-        }
-    }
-
-    class ScriptException(text: String) :
-        AppActionFailedException(text)
-
-    companion object {
-        const val BACKUP_DIR_DATA = "data"
-        const val BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files"
-        const val BACKUP_DIR_EXTERNAL_FILES = "external_files"
-        const val BACKUP_DIR_OBB_FILES = "obb_files"
-        const val BACKUP_DIR_MEDIA_FILES = "media_files"
-
-
-        val ignoredPackages = Regex(
-                """(?x)(^(
-                  android
-                | com\.(google\.)?android\.shell
-                | com\.(google\.)?android\.systemui
-                | com\.(google\.)?android\.externalstorage
-                | com\.(google\.)?android\.mtp
-                | com\.(google\.)?android\.providers\.downloads\.ui
-                | com\.(google\.)?android\.gms
-                | com\.(google\.)?android\.gsf
-                | com\.(google\.)?android\.providers\.media\b.*
-                )$)"""
-        )
-
-        val doNotStop = Regex(
-                """(?x)(^(                    
-                  android
-                | com\.(google\.)?android\.shell
-                | com\.(google\.)?android\.systemui
-                | com\.(google\.)?android\.externalstorage
-                | com\.(google\.)?android\.mtp
-                | com\.(google\.)?android\.providers\.downloads\.ui
-                | com\.(google\.)?android\.gms
-                | com\.(google\.)?android\.gsf
-                | com\.(google\.)?android\.providers\.media\b.*
-                | com\.(google\.)?android\.providers\..*
-                | com\.topjohnwu\.magisk
-                | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
-                )$)"""
-        )
-
-        private val preResults = mutableMapOf<String, List<String>>()
-
-        fun extractErrorMessage(shellResult: Shell.Result): String {
-            // if stderr does not say anything, try stdout
-            val err = if (shellResult.err.isEmpty()) shellResult.out else shellResult.err
-            return if (err.isEmpty()) {
-                "Unknown Error"
-            } else err[err.size - 1]
-        }
-
-        fun isSuspended(packageName: String): Boolean {
-            return ShellUtils.fastCmdResult("pm dump $packageName | grep suspended=true")
-        }
-
-        fun cleanupSuspended(packageName: String) {
-            Timber.i("cleanup $packageName")
-            try {
-                runAsRoot("pm dump $packageName | grep suspended=true && pm unsuspend ${packageName}")
-            } catch (e: Throwable) {
-            }
-        }
-    }
-}
+                Timber
