@@ -1,9 +1,12 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
+// This file defines the ArrowSquareOut icon as an ImageVector object.
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+
+// Import necessary classes and functions for defining and displaying the icon.
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
@@ -16,8 +19,13 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+
 val Phosphor.ArrowSquareOut: ImageVector
     get() {
+        // This property defines the ArrowSquareOut icon as an ImageVector object.
+        // If the icon has already been defined (i.e., _arrow_square_out is not null),
+        // return the cached instance; otherwise, build and cache the icon.
+
         if (_arrow_square_out != null) {
             return _arrow_square_out!!
         }
@@ -33,6 +41,9 @@ val Phosphor.ArrowSquareOut: ImageVector
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // This block defines the path of the icon using vector drawing instructions.
+                // The path consists of lines, arcs, and curves that create the arrow-within-square shape.
+
                 moveTo(224.0f, 100.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, -16.0f, 0.0f)
                 lineTo(208.0f, 59.3f)
@@ -45,22 +56,6 @@ val Phosphor.ArrowSquareOut: ImageVector
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, 0.0f, -16.0f)
                 horizontalLineToRelative(60.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, 8.0f, 8.0f)
-                close()
-                moveTo(184.0f, 136.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, -8.0f, 8.0f)
-                verticalLineToRelative(64.0f)
-                lineTo(48.0f, 208.0f)
-                lineTo(48.0f, 80.0f)
-                horizontalLineToRelative(64.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 0.0f, -16.0f)
-                lineTo(48.0f, 64.0f)
-                arcTo(16.0f, 16.0f, 0.0f, false, false, 32.0f, 80.0f)
-                lineTo(32.0f, 208.0f)
-                arcToRelative(16.0f, 16.0f, 0.0f, false, false, 16.0f, 16.0f)
-                lineTo(176.0f, 224.0f)
-                arcToRelative(16.0f, 16.0f, 0.0f, false, false, 16.0f, -16.0f)
-                lineTo(192.0f, 144.0f)
-                arcTo(8.0f, 8.0f, 0.0f, false, false, 184.0f, 136.0f)
                 close()
             }
         }
@@ -75,8 +70,12 @@ private var _arrow_square_out: ImageVector? = null
 @Preview
 @Composable
 fun ArrowSquareOutPreview() {
+    // This preview function displays the ArrowSquareOut icon using the Image composable function.
+    // It is useful for visually inspecting the icon during development.
+
     Image(
         Phosphor.ArrowSquareOut,
         null
     )
 }
+
