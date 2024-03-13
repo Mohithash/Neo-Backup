@@ -27,6 +27,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Vertically flip the dimensions of the given [placeable] and position it in the center of the available
+ * space.
+ */
 fun Modifier.vertical() = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
     layout(placeable.height, placeable.width) {
@@ -37,6 +41,10 @@ fun Modifier.vertical() = layout { measurable, constraints ->
     }
 }
 
+/**
+ * If the given [boolean] is true, apply the modifier returned by the [modifier] lambda. Otherwise,
+ * return the original [Modifier].
+ */
 @Composable
 inline fun Modifier.ifThen(
     boolean: Boolean,
@@ -49,6 +57,9 @@ inline fun Modifier.ifThen(
     }
 }
 
+/**
+ * Apply a block border to the [Modifier]. This includes clipping the shape and adding a border.
+ */
 fun Modifier.blockBorder() = composed {
     this
         .clip(MaterialTheme.shapes.extraLarge)
@@ -59,12 +70,19 @@ fun Modifier.blockBorder() = composed {
         )
 }
 
+/**
+ * A composable that wraps the [SelectionContainer] and provides a simple interface for using it.
+ */
 @Composable
 fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     SelectionContainer(modifier = modifier, content = content)
-    //content()
+    //content() // Uncomment this line if you want to display the content without selection
 }
 
+/**
+ * Collect the [flow] and call the [onChange] function whenever a new value is emitted. This is
+ * useful for reacting to changes in a flow within a Composable.
+ */
 @Composable
 fun <T> ObservedEffect(flow: Flow<T?>, onChange: (T?) -> Unit) {
     val lcOwner = LocalLifecycleOwner.current
@@ -75,6 +93,10 @@ fun <T> ObservedEffect(flow: Flow<T?>, onChange: (T?) -> Unit) {
     }
 }
 
+/**
+ * A version of [ObservedEffect] that accepts a function to be called whenever the effect is
+ * active.
+ */
 @Composable
 fun ObservedEffect(onChange: () -> Unit) {
     val lcOwner = LocalLifecycleOwner.current
@@ -85,7 +107,10 @@ fun ObservedEffect(onChange: () -> Unit) {
     }
 }
 
-
+/**
+ * A [MutableSharedFlow] implementation that includes a [stateIn] call to provide a [State] object
+ * that can be used in Composables.
+ */
 class MutableComposableSharedFlow<T>(
     var initial: T,
     val scope: CoroutineScope,
@@ -123,6 +148,10 @@ class MutableComposableSharedFlow<T>(
     }
 }
 
+/**
+ * A [MutableStateFlow] implementation that includes an [asStateFlow] call to provide a [State]
+ * object that can be used in Composables.
+ */
 class MutableComposableStateFlow<T>(
     var initial: T,
     val scope: CoroutineScope,
@@ -133,47 +162,4 @@ class MutableComposableStateFlow<T>(
     val state = flow.asStateFlow()
 
     var value: T
-        get() {
-            val value = state.value
-            if (value is String)
-                traceFlows { "*** $label => '$value'" }
-            else
-                traceFlows { "*** $label => $value" }
-            return value
-        }
-        set(value: T) {
-            if (value is String)
-                traceFlows { "*** $label <= '$value'" }
-            else
-                traceFlows { "*** $label <= $value" }
-            //initial = value
-            scope.launch { flow.update { value } }
-        }
-
-    init {
-        value = initial
-    }
-}
-
-//typealias MutableComposableFlow<T> = MutableComposableSharedFlow<T>
-typealias MutableComposableFlow<T> = MutableComposableStateFlow<T>
-
-
-@Composable
-fun LazyListState.isAtTop() = remember {
-    derivedStateOf {
-        firstVisibleItemIndex == 0 && firstVisibleItemScrollOffset == 0
-    }
-}.value
-
-@Composable
-fun LazyListState.isAtBottom() = remember {
-    derivedStateOf {
-        try {
-            layoutInfo.visibleItemsInfo.last().index >= layoutInfo.totalItemsCount - 1
-        } catch (_: Throwable) {
-            true
-        }
-    }
-}.value
-
+        get()
