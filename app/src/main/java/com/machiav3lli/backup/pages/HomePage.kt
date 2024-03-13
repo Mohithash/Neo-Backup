@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.pages
 
-import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalContext
+import androidx.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,8 +36,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
@@ -84,243 +89,4 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage() {
-    // TODO include tags in search
-    val mActivity = OABX.main!!
-    val scope = rememberCoroutineScope()
-    val viewModel = mActivity.viewModel
 
-    val filteredList by viewModel.filteredList.collectAsState(emptyList())
-    val updatedPackages by viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible = updatedPackages.isNotEmpty()  // recompose is already triggered above
-    var updaterExpanded by remember { mutableStateOf(false) }
-    val selection = viewModel.selection
-    val nSelected = selection.filter { it.value }.keys.size
-    var menuPackage by remember { mutableStateOf<Package?>(null) }
-    val menuExpanded = viewModel.menuExpanded
-    val menuButtonAlwaysVisible = pref_menuButtonAlwaysVisible.value
-    val openBatchDialog = remember { mutableStateOf(false) }
-    val appSheetState = rememberModalBottomSheetState(true)
-    val appSheetPN: MutableState<String?> = rememberSaveable { mutableStateOf(null) }
-    val appSheetPackage: MutableState<Package?> = remember(appSheetPN.value) {
-        mutableStateOf(
-            (filteredList + updatedPackages)
-                .find { it.packageName == appSheetPN.value }
-        )
-    }
-    val appSheetVM = remember(appSheetPackage.value) {
-        if (appSheetPackage.value != null) AppSheetViewModel(
-            appSheetPackage.value,
-            OABX.db,
-            ShellCommands(),
-        ) else null
-    }
-
-    traceCompose {
-        "HomePage filtered=${
-            filteredList.size
-        } updated=${
-            updatedPackages.size
-        }->${
-            if (updaterVisible) "visible" else "hidden"
-        } menu=${
-            menuExpanded.value
-        } always=${menuButtonAlwaysVisible} language=${pref_languages.value}"
-    }
-
-    // prefetch icons
-    if (filteredList.size > IconCache.size) {    // includes empty cache and empty filteredList
-        beginNanoTimer("prefetchIcons")
-        filteredList.forEach { pkg ->
-            cachedAsyncImagePainter(model = pkg.iconData)
-        }
-        endNanoTimer("prefetchIcons")
-    }
-
-    Scaffold(
-        containerColor = Color.Transparent,
-        floatingActionButton = {
-            if (nSelected > 0 || updaterVisible || menuButtonAlwaysVisible) {
-                Row(
-                    modifier = Modifier.padding(start = 28.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    if (updaterVisible) {
-                        ExpandingFadingVisibility(
-                            expanded = updaterExpanded,
-                            expandedView = {
-                                Column {
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 8.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        ActionButton(
-                                            modifier = Modifier.weight(1f),
-                                            text = stringResource(id = R.string.backup_all_updated),
-                                        ) {
-                                            openBatchDialog.value = true
-                                        }
-                                        ElevatedActionButton(
-                                            text = "",
-                                            icon = Phosphor.CaretDown,
-                                            withText = false
-                                        ) {
-                                            updaterExpanded = !updaterExpanded
-                                        }
-                                    }
-                                    UpdatedPackageRecycler(
-                                        productsList = updatedPackages,
-                                        onClick = { item ->
-                                            appSheetPN.value = item.packageName
-                                        }
-                                    )
-                                }
-                            },
-                            collapsedView = {
-                                val text = pluralStringResource(
-                                    id = R.plurals.updated_apps,
-                                    count = updatedPackages.size,
-                                    updatedPackages.size
-                                )
-                                ExtendedFloatingActionButton(
-                                    text = { Text(text = text) },
-                                    icon = {
-                                        Icon(
-                                            imageVector = if (updaterExpanded) Phosphor.CaretDown else Phosphor.CircleWavyWarning,
-                                            contentDescription = text
-                                        )
-                                    },
-                                    containerColor = Color.Transparent,
-                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                    onClick = { updaterExpanded = !updaterExpanded }
-                                )
-                            }
-                        )
-                    }
-                    if (!(updaterVisible && updaterExpanded) &&
-                        (nSelected > 0 || menuButtonAlwaysVisible)
-                    ) {
-                        ExtendedFloatingActionButton(
-                            text = { Text(text = nSelected.toString()) },
-                            icon = {
-                                Icon(
-                                    imageVector = Phosphor.List,
-                                    contentDescription = stringResource(id = R.string.context_menu)
-                                )
-                            },
-                            onClick = {
-                                menuExpanded.value = true
-                            },
-                        )
-                    }
-                }
-            }
-        }
-    ) {
-        HomePackageRecycler(
-            modifier = Modifier
-                .blockBorder()
-                .fillMaxSize(),
-            productsList = filteredList,
-            selection = selection,
-            onLongClick = { item ->
-                if (selection[item.packageName] == true) {
-                    menuPackage = item
-                    menuExpanded.value = true
-                } else {
-                    selection[item.packageName] = selection[item.packageName] != true
-                }
-            },
-            onClick = { item ->
-                if (filteredList.none { selection[it.packageName] == true }) {
-                    appSheetPN.value = item.packageName
-                } else {
-                    selection[item.packageName] = selection[item.packageName] != true
-                }
-            },
-        )
-
-        if (menuExpanded.value) {
-            Box(
-                modifier = Modifier     // necessary to move the menu on the whole screen
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.TopStart)
-            ) {
-                MainPackageContextMenu(
-                    expanded = menuExpanded,
-                    packageItem = menuPackage,
-                    productsList = filteredList,
-                    selection = selection,
-                    openSheet = { item ->
-                        appSheetPN.value = item.packageName
-                    }
-                )
-            }
-        }
-        if (appSheetPN.value != null) {
-            val dismiss = {
-                scope.launch { appSheetState.hide() }
-                appSheetPN.value = null
-            }
-            Sheet(
-                sheetState = appSheetState,
-                onDismissRequest = dismiss
-            ) {
-                AppSheet(
-                    viewModel = appSheetVM!!,
-                    packageName = appSheetPN.value ?: "",
-                    onDismiss = dismiss,
-                )
-            }
-        }
-        if (openBatchDialog.value) BaseDialog(openDialogCustom = openBatchDialog) {
-            val selectedList = updatedPackages
-                .map { it.packageInfo }
-                .toCollection(ArrayList())
-            val selectedApk = mutableMapOf<String, Int>()
-            val selectedData = mutableMapOf<String, Int>()
-            val selectedListModes = updatedPackages
-                .map {
-                    altModeToMode(
-                        it.latestBackup?.let { bp ->
-                            when {
-                                bp.hasApk && bp.hasAppData -> {
-                                    selectedApk[bp.packageName] = 1
-                                    selectedData[bp.packageName] = 1
-                                    ALT_MODE_BOTH
-                                }
-
-                                bp.hasApk                  -> {
-                                    selectedApk[bp.packageName] = 1
-                                    ALT_MODE_APK
-                                }
-
-                                bp.hasAppData              -> {
-                                    selectedData[bp.packageName] = 1
-                                    ALT_MODE_DATA
-                                }
-
-                                else                       -> ALT_MODE_UNSET
-                            }
-                        } ?: ALT_MODE_BOTH  // no backup -> try all
-                        , true
-                    )
-                }
-                .toCollection(ArrayList())
-
-            BatchActionDialogUI(
-                backupBoolean = true,
-                selectedPackageInfos = selectedList,
-                selectedApk = selectedApk,
-                selectedData = selectedData,
-                openDialogCustom = openBatchDialog,
-            ) {
-                mActivity.startBatchAction(
-                    true,
-                    selectedPackageNames = selectedList.map { it.packageName },
-                    selectedModes = selectedListModes,
-                )
-            }
-        }
-    }
-}
