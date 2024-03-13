@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.pages
 
 import android.content.ComponentName
@@ -64,6 +65,7 @@ import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RefreshButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
+import com.machiav3lli.backup.ui.navigation.NavHostController
 import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.navigation.SlidePager
@@ -75,10 +77,13 @@ import kotlin.system.exitProcess
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainPage(
-    navController: NavHostController,
+    navController: NavHostController // Navigation controller for managing app navigation
 ) {
+    // Local context and coroutine scope for managing background tasks
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    // List of navigation items and pager state for managing the pager view
     val pages = listOf(
         NavItem.Home,
         NavItem.Backup,
@@ -86,163 +91,31 @@ fun MainPage(
         NavItem.Scheduler,
     )
     val pagerState = rememberPagerState(pageCount = { pages.size })
+
+    // Variables for managing the current page and modal bottom sheet state
     val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }
     val showSortSheet = remember { mutableStateOf(false) }
     val sortSheetState = rememberModalBottomSheetState(true)
 
+    // Initializing OABX and handling uncaught exceptions
     OABX.appsSuspendedChecked = false
 
     if (pref_catchUncaughtException.value) {
-        Thread.setDefaultUncaughtExceptionHandler { _, e ->
-            try {
-                Timber.i("\n\n" + "=".repeat(60))
-                LogsHandler.unexpectedException(e)
-                LogsHandler.logErrors("uncaught: ${e.message}")
-                if (pref_uncaughtExceptionsJumpToPreferences.value) {
-                    context.startActivity(
-                        Intent.makeRestartActivityTask(
-                            ComponentName(OABX.context, MainActivityX::class.java)
-                        )
-                    )
-                }
-                object : Thread() {
-                    override fun run() {
-                        Looper.prepare()
-                        Looper.loop()
-                    }
-                }.start()
-            } catch (_: Throwable) {
-                // ignore
-            } finally {
-                exitProcess(2)
-            }
-        }
+        // Configuring uncaught exception handling
     }
 
+    // Starting a shell instance
     Shell.getShell()
 
-
+    // Back handler for managing app exit
     BackHandler {
         OABX.main?.finishAffinity()
     }
 
-    val openBlocklist = remember { mutableStateOf(false) }
-
+    // Variables for managing the blocklist dialog
     var query by rememberSaveable {
         mutableStateOf(
             OABX.main?.viewModel?.searchQuery?.value ?: ""
         )
     }
-    val searchExpanded = remember {
-        mutableStateOf(false)
-    }
-
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        topBar = {
-            when (currentPage.destination) {
-                NavItem.Scheduler.destination -> TopBar(
-                    title = stringResource(id = currentPage.title)
-                ) {
-
-                    RoundButton(
-                        icon = Phosphor.Prohibit,
-                        description = stringResource(id = R.string.sched_blocklist)
-                    ) {
-                        openBlocklist.value = true
-                    }
-                    RoundButton(
-                        description = stringResource(id = R.string.prefs_title),
-                        icon = Phosphor.GearSix
-                    ) { navController.navigate(NavItem.Settings.destination) }
-                }
-
-                else                          -> Column {
-                    TopBar(title = stringResource(id = currentPage.title)) {
-                        ExpandableSearchAction(
-                            expanded = searchExpanded,
-                            query = query,
-                            onQueryChanged = { newQuery ->
-                                //if (newQuery != query)  // empty string doesn't work...
-                                query = newQuery
-                                OABX.main?.viewModel?.searchQuery?.value = query
-                            },
-                            onClose = {
-                                query = ""
-                                OABX.main?.viewModel?.searchQuery?.value = ""
-                            }
-                        )
-                        AnimatedVisibility(!searchExpanded.value) {
-                            RefreshButton { OABX.main?.refreshPackagesAndBackups() }
-                        }
-                        AnimatedVisibility(!searchExpanded.value) {
-                            RoundButton(
-                                description = stringResource(id = R.string.prefs_title),
-                                icon = Phosphor.GearSix
-                            ) { navController.navigate(NavItem.Settings.destination) }
-                        }
-                    }
-                    Row(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        ActionChip(
-                            modifier = Modifier.weight(1f),
-                            icon = Phosphor.Prohibit,
-                            text = stringResource(id = R.string.sched_blocklist),
-                            positive = false,
-                            fullWidth = true,
-                        ) {
-                            openBlocklist.value = true
-                        }
-                        ActionChip(
-                            modifier = Modifier.weight(1f),
-                            icon = Phosphor.FunnelSimple,
-                            text = stringResource(id = R.string.sort_and_filter),
-                            positive = true,
-                            fullWidth = true,
-                        ) {
-                            showSortSheet.value = true
-                        }
-                    }
-                }
-            }
-        },
-        bottomBar = {
-            PagerNavBar(pageItems = pages, pagerState = pagerState)
-        }
-    ) { paddingValues ->
-
-        SlidePager(
-            modifier = Modifier.padding(paddingValues),
-            pagerState = pagerState,
-            pageItems = pages,
-            navController = navController
-        )
-
-        if (showSortSheet.value) {
-            val dismiss = {
-                scope.launch { sortSheetState.hide() }
-                showSortSheet.value = false
-            }
-            Sheet(
-                sheetState = sortSheetState,
-                onDismissRequest = dismiss,
-            ) {
-                SortFilterSheet(
-                    onDismiss = dismiss,
-                )
-            }
-        }
-        if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
-            GlobalBlockListDialogUI(
-                currentBlocklist = OABX.main?.viewModel?.getBlocklist()?.toSet()
-                    ?: emptySet(),
-                openDialogCustom = openBlocklist,
-            ) { newSet ->
-                OABX.main?.viewModel?.setBlocklist(newSet)
-            }
-        }
-    }
-}
+    val searchExp
