@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.room.Entity
-import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -13,16 +12,21 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * This class is used to describe special backup files that use a hardcoded list of file paths
+ *
+ * SpecialInfo entities are used to represent virtual packages that are not actual app packages.
+ * These entities contain a list of special files that should be backed up or restored.
  */
 @Entity
 open class SpecialInfo : PackageInfo {
 
+    // Holds the list of special files for this virtual package
     var specialFiles: Array<String> = arrayOf()
 
+    // Primary constructor for SpecialInfo
     constructor(
         packageName: String,
         label: String = "",
-        versionName: String? = "",
+        versionName: String? = null,
         versionCode: Int = 0,
         specialFiles: Array<String> = arrayOf(),
         icon: Int = -1,
@@ -30,6 +34,7 @@ open class SpecialInfo : PackageInfo {
         this.specialFiles = specialFiles
     }
 
+    // Secondary constructor for SpecialInfo
     constructor(
         packageName: String,
         packageLabel: String,
@@ -52,11 +57,27 @@ open class SpecialInfo : PackageInfo {
         icon
     )
 
+    // Indicates if this PackageInfo is a special (virtual) package
     override val isSpecial: Boolean
         get() = true
 
     companion object {
         private val specialInfos: MutableList<SpecialInfo> = mutableListOf()
+
+        // AtomicInteger to keep track of the number of threads accessing specialInfos
+        private val threadCount: AtomicInteger = AtomicInteger(0)
+
+        // Flag to check if specialInfos is locked
+        private var locked = false
+
+        /**
+         * Clears the cache of specialInfos
+         */
+        fun clearCache() {
+            synchronized(specialInfos) {
+                specialInfos.clear()
+            }
+        }
 
         /**
          * Returns the list of special (virtual) packages
@@ -66,15 +87,6 @@ open class SpecialInfo : PackageInfo {
          * @throws BackupLocationInAccessibleException   when the backup location cannot be read for any reason
          * @throws StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
-        private var threadCount: AtomicInteger = AtomicInteger(0)
-        private var locked = false
-
-        fun clearCache() {
-            synchronized(specialInfos) {
-                specialInfos.clear()
-            }
-        }
-
         @Throws(
             BackupLocationInAccessibleException::class,
             StorageLocationNotConfiguredException::class
@@ -107,6 +119,7 @@ open class SpecialInfo : PackageInfo {
                     val vendorDeDir = "/data/vendor_de/$userId"
                     val specPrefix = "$ "
 
+                    // Add special info for SMS and MMS
                     if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
                         specialInfos
                             .add(
@@ -129,87 +142,4 @@ open class SpecialInfo : PackageInfo {
                                         "${context.cacheDir.absolutePath}/special.calllogs.json.json"
                                     ), R.drawable.ic_call_logs
                                 )
-                            )
-                    }
-                    specialInfos
-                        .add(
-                            SpecialInfo(
-                                "special.accounts",
-                                specPrefix + context.getString(R.string.spec_accounts),
-                                Build.VERSION.RELEASE,
-                                Build.VERSION.SDK_INT, arrayOf(
-                                    "$systemCeDir/accounts_ce.db"
-                                ), R.drawable.ic_accounts
-                            )
-                        )
-                    specialInfos
-                        .add(
-                            SpecialInfo(
-                                "special.bluetooth",
-                                specPrefix + context.getString(R.string.spec_bluetooth),
-                                Build.VERSION.RELEASE,
-                                Build.VERSION.SDK_INT, arrayOf(
-                                    "$miscDir/bluedroid/bt_config.conf"
-                                ), R.drawable.ic_bluetooth
-                            )
-                        )
-                    specialInfos
-                        .add(
-                            SpecialInfo(
-                                "special.data.usage.policy",
-                                specPrefix + context.getString(R.string.spec_data),
-                                Build.VERSION.RELEASE,
-                                Build.VERSION.SDK_INT, arrayOf(
-                                    "$systemDir/netpolicy.xml",
-                                    "$systemDir/netstats/"
-                                ), R.drawable.ic_privacy
-                            )
-                        )
-                    specialInfos
-                        .add(
-                            SpecialInfo(
-                                "special.fingerprint",
-                                specPrefix + context.getString(R.string.spec_fingerprint),
-                                Build.VERSION.RELEASE,
-                                Build.VERSION.SDK_INT, arrayOf(
-                                    "$userDir/settings_fingerprint.xml",
-                                    "$vendorDeDir/fpdata/"
-                                ), R.drawable.ic_fingerprint
-                            )
-                        )
-                    specialInfos
-                        .add(
-                            SpecialInfo(
-                                "special.wallpaper",
-                                specPrefix + context.getString(R.string.spec_wallpaper),
-                                Build.VERSION.RELEASE,
-                                Build.VERSION.SDK_INT, arrayOf(
-                                    "$userDir/wallpaper",
-                                    "$userDir/wallpaper_info.xml"
-                                ), R.drawable.ic_wallpaper
-                            )
-                        )
-                    // Location of the WifiConfigStore had been moved with Android R
-                    val wifiConfigLocation = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                        "$miscDir/wifi/WifiConfigStore.xml"
-                    } else {
-                        "$miscDir/apexdata/com.android.wifi/WifiConfigStore.xml"
-                    }
-                    specialInfos
-                        .add(
-                            SpecialInfo(
-                                "special.wifi.access.points",
-                                specPrefix + context.getString(R.string.spec_wifiAccessPoints),
-                                Build.VERSION.RELEASE,
-                                Build.VERSION.SDK_INT, arrayOf(
-                                    wifiConfigLocation
-                                ), R.drawable.ic_wifi
-                            )
-                        )
-                }
-                locked = false
-            }
-            return specialInfos
-        }
-    }
-}
+                           
