@@ -1,26 +1,26 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
+// GooglePhotosLogo is an ImageVector class that defines the shape of the Google Photos logo
+// using a path. The path is filled with a solid color and has no stroke.
+
+// The path describes the shape of the Google Photos logo using various commands such as
+// moveTo, lineTo, and arcTo.
+
+// The ImageVector class also includes a preview function, GooglePhotosLogoPreview, which
+// displays an Image composable using the GooglePhotosLogo ImageVector.
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-
+// Define the ImageVector class named GooglePhotosLogo
 val Phosphor.GooglePhotosLogo: ImageVector
     get() {
+        // If the ImageVector has already been created, return it
         if (_google_photos_logo != null) {
             return _google_photos_logo!!
         }
+        // Otherwise, create a new ImageVector using a Builder
         _google_photos_logo = Builder(
             name = "Google-photos-logo",
             defaultWidth = 24.0.dp,
@@ -28,6 +28,7 @@ val Phosphor.GooglePhotosLogo: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the path using various commands
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
@@ -39,7 +40,7 @@ val Phosphor.GooglePhotosLogo: ImageVector
                 arcToRelative(68.1f, 68.1f, 0.0f, false, false, -68.0f, -68.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, false, -8.0f, 8.0f)
                 lineTo(124.0f, 69.0f)
-                arcTo(67.4f, 67.4f, 0.0f, false, false, 84.0f, 56.0f)
+                arcToRelative(67.4f, 67.4f, 0.0f, false, false, -40.0f, 13.0f)
                 arcToRelative(68.1f, 68.1f, 0.0f, false, false, -68.0f, 68.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, false, 8.0f, 8.0f)
                 lineTo(69.0f, 132.0f)
@@ -47,7 +48,7 @@ val Phosphor.GooglePhotosLogo: ImageVector
                 arcToRelative(68.1f, 68.1f, 0.0f, false, false, 68.0f, 68.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, false, 8.0f, -8.0f)
                 lineTo(132.0f, 187.0f)
-                arcToRelative(67.4f, 67.4f, 0.0f, false, false, 40.0f, 13.0f)
+                arcToRelative(67.4f, 67.4f, 0.0f, false, false, 40.0f, -13.0f)
                 arcToRelative(68.1f, 68.1f, 0.0f, false, false, 68.0f, -68.0f)
                 arcTo(8.0f, 8.0f, 0.0f, false, false, 232.0f, 124.0f)
                 close()
@@ -59,35 +60,4 @@ val Phosphor.GooglePhotosLogo: ImageVector
                 moveTo(84.0f, 72.0f)
                 arcToRelative(51.5f, 51.5f, 0.0f, false, true, 40.0f, 18.8f)
                 lineTo(124.0f, 116.0f)
-                lineTo(32.6f, 116.0f)
-                arcTo(52.1f, 52.1f, 0.0f, false, true, 84.0f, 72.0f)
-                close()
-                moveTo(116.0f, 223.4f)
-                arcTo(52.1f, 52.1f, 0.0f, false, true, 72.0f, 172.0f)
-                arcToRelative(51.5f, 51.5f, 0.0f, false, true, 18.8f, -40.0f)
-                lineTo(116.0f, 132.0f)
-                close()
-                moveTo(172.0f, 184.0f)
-                arcToRelative(51.5f, 51.5f, 0.0f, false, true, -40.0f, -18.8f)
-                lineTo(132.0f, 140.0f)
-                horizontalLineToRelative(91.4f)
-                arcTo(52.1f, 52.1f, 0.0f, false, true, 172.0f, 184.0f)
-                close()
-            }
-        }
-            .build()
-        return _google_photos_logo!!
-    }
-
-private var _google_photos_logo: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun GooglePhotosLogoPreview() {
-    Image(
-        Phosphor.GooglePhotosLogo,
-        null
-    )
-}
+                lineTo(32.6f, 116.0
