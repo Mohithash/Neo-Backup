@@ -1,4 +1,4 @@
-/*
+/**
  * OAndBackupX: open-source apps backup and restore app.
  * Copyright (C) 2020  Antonios Hazim
  *
@@ -15,23 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.utils
 
 import android.content.Context
-import com.machiav3lli.backup.ALT_MODE_APK
-import com.machiav3lli.backup.ALT_MODE_BOTH
-import com.machiav3lli.backup.ALT_MODE_DATA
-import com.machiav3lli.backup.MODE_APK
-import com.machiav3lli.backup.MODE_DATA
-import com.machiav3lli.backup.MODE_DATA_DE
-import com.machiav3lli.backup.MODE_DATA_EXT
-import com.machiav3lli.backup.MODE_DATA_MEDIA
-import com.machiav3lli.backup.MODE_DATA_OBB
-import com.machiav3lli.backup.MODE_UNSET
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.possibleSchedModes
 
-fun altModeToMode(mode: Int, backupBoolean: Boolean) = when (mode) {
+/**
+ * Converts alternative mode to the corresponding main mode based on the backupBoolean flag.
+ *
+ * @param mode The alternative mode (ALT\_MODE\_APK, ALT\_MODE\_BOTH, or other ALT\_MODE\_*).
+ * @param backupBoolean A flag indicating if the operation is a backup or restore.
+ * @return The corresponding main mode (MODE\_APK, MODE\_DATA, or combined mode).
+ */
+fun altModeToMode(mode: Int, backupBoolean: Boolean): Int = when (mode) {
     ALT_MODE_APK -> MODE_APK
     else         -> {
         var dataMode = if (mode == ALT_MODE_BOTH) 0b11000 else MODE_DATA
@@ -50,7 +46,13 @@ fun altModeToMode(mode: Int, backupBoolean: Boolean) = when (mode) {
     }
 }
 
-fun backupModeIfActive(mode: Int) = when {
+/**
+ * Returns the backup mode if it's active, otherwise MODE_UNSET.
+ *
+ * @param mode The mode to check.
+ * @return The backup mode if it's active, otherwise MODE_UNSET.
+ */
+fun backupModeIfActive(mode: Int): Int = when {
     mode == MODE_APK                                    -> MODE_APK
     mode == MODE_DATA                                   -> MODE_DATA
     mode == MODE_DATA_DE && isBackupDeviceProtectedData -> MODE_DATA_DE
@@ -60,9 +62,22 @@ fun backupModeIfActive(mode: Int) = when {
     else                                                -> MODE_UNSET
 }
 
+/**
+ * Returns a list of modes that the given mode belongs to.
+ *
+ * @param mode The mode to find the corresponding modes for.
+ * @return A list of modes that the given mode belongs to.
+ */
 fun modeToModes(mode: Int): List<Int> = possibleSchedModes
     .filter { mode and it == it }
 
+/**
+ * Converts a mode to its string representation.
+ *
+ * @param context The application context.
+ * @param mode The mode to convert.
+ * @return The string representation of the mode.
+ */
 fun modeToString(context: Context, mode: Int): String = when (mode) {
     MODE_APK        -> context.getString(R.string.radio_apk)
     MODE_DATA       -> context.getString(R.string.radio_data)
@@ -73,6 +88,13 @@ fun modeToString(context: Context, mode: Int): String = when (mode) {
     else            -> ""
 }
 
+/**
+ * Converts an alternative mode to its string representation.
+ *
+ * @param context The application context.
+ * @param mode The alternative mode to convert.
+ * @return The string representation of the alternative mode.
+ */
 fun modeToStringAlt(context: Context, mode: Int): String = when (mode) {
     ALT_MODE_APK  -> context.getString(R.string.handleApk)
     ALT_MODE_DATA -> context.getString(R.string.handleData)
@@ -80,5 +102,12 @@ fun modeToStringAlt(context: Context, mode: Int): String = when (mode) {
     else          -> ""
 }
 
+/**
+ * Converts a list of modes to a single string.
+ *
+ * @param context The application context.
+ * @param modes The list of modes to convert.
+ * @return A single string containing all the mode representations.
+ */
 fun modesToString(context: Context, modes: List<Int>): String =
     modes.joinToString(", ") { modeToString(context, it) }
