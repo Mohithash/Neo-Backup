@@ -1,10 +1,11 @@
+// EyeSlash.kt
+
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
-
+// Import necessary classes and libraries for creating and displaying ImageVector objects
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
@@ -16,11 +17,14 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// Define the EyeSlash ImageVector object
 val Phosphor.EyeSlash: ImageVector
     get() {
+        // Check if the ImageVector object has already been created
         if (_eye_slash != null) {
             return _eye_slash!!
         }
+        // Create the ImageVector object using the Phosphor.Builder DSL
         _eye_slash = Builder(
             name = "Eye-slash",
             defaultWidth = 24.0.dp,
@@ -28,11 +32,13 @@ val Phosphor.EyeSlash: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the path property of the ImageVector object
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // Define the shape of the image using a series of commands
                 moveTo(53.9f, 34.6f)
                 arcTo(8.0f, 8.0f, 0.0f, false, false, 42.1f, 45.4f)
                 lineTo(61.3f, 66.5f)
@@ -57,48 +63,4 @@ val Phosphor.EyeSlash: ImageVector
                 curveToRelative(4.7f, -8.8f, 19.8f, -33.5f, 47.3f, -49.4f)
                 lineToRelative(18.0f, 19.8f)
                 arcToRelative(48.0f, 48.0f, 0.0f, false, false, 63.6f, 70.0f)
-                lineToRelative(14.7f, 16.2f)
-                arcTo(112.1f, 112.1f, 0.0f, false, true, 128.0f, 192.0f)
-                close()
-                moveTo(247.3f, 131.3f)
-                curveToRelative(-0.4f, 0.9f, -10.5f, 23.3f, -33.4f, 43.8f)
-                arcToRelative(8.1f, 8.1f, 0.0f, false, true, -5.3f, 2.0f)
-                arcToRelative(7.6f, 7.6f, 0.0f, false, true, -5.9f, -2.7f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, true, 0.6f, -11.3f)
-                arcTo(131.0f, 131.0f, 0.0f, false, false, 231.0f, 128.0f)
-                arcToRelative(130.3f, 130.3f, 0.0f, false, false, -23.1f, -30.8f)
-                curveTo(185.7f, 75.2f, 158.8f, 64.0f, 128.0f, 64.0f)
-                arcToRelative(112.9f, 112.9f, 0.0f, false, false, -19.4f, 1.6f)
-                arcTo(8.1f, 8.1f, 0.0f, false, true, 99.4f, 59.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, true, 6.6f, -9.2f)
-                arcTo(132.4f, 132.4f, 0.0f, false, true, 128.0f, 48.0f)
-                curveToRelative(34.9f, 0.0f, 66.6f, 13.3f, 91.7f, 38.3f)
-                curveToRelative(18.8f, 18.9f, 27.3f, 37.7f, 27.6f, 38.5f)
-                arcTo(8.2f, 8.2f, 0.0f, false, true, 247.3f, 131.3f)
-                close()
-                moveTo(134.0f, 96.6f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, true, 3.0f, -15.8f)
-                arcToRelative(48.3f, 48.3f, 0.0f, false, true, 38.8f, 42.7f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, true, -7.2f, 8.7f)
-                horizontalLineToRelative(-0.8f)
-                arcToRelative(7.9f, 7.9f, 0.0f, false, true, -7.9f, -7.2f)
-                arcTo(32.2f, 32.2f, 0.0f, false, false, 134.0f, 96.6f)
-                close()
-            }
-        }
-            .build()
-        return _eye_slash!!
-    }
-
-private var _eye_slash: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun EyeSlashPreview() {
-    Image(
-        Phosphor.EyeSlash,
-        null
-    )
-}
+                lineToRelative(14.7f, 16.2
