@@ -1,91 +1,79 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
+// Phosphor.Translate: ImageVector
+// Returns the "Translate" icon as an ImageVector object.
+// The ImageVector is a vector representation of the icon, which can be used to display it in the Jetpack Compose UI toolkit.
 
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+// ImageVector:
+// An interface representing a vector image.
+// Provides methods for drawing the vector image using various parameters such as color, size, and stroke.
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
+// _translate: ImageVector?
+// A nullable property that stores the ImageVector object for the "Translate" icon.
+// The underscore at the beginning of the variable name indicates that it is a private property.
 
-val Phosphor.Translate: ImageVector
-    get() {
-        if (_translate != null) {
-            return _translate!!
-        }
-        _translate = Builder(
-            name = "Translate",
-            defaultWidth = 24.0.dp,
-            defaultHeight = 24.0.dp,
-            viewportWidth = 256.0f,
-            viewportHeight = 256.0f,
-        ).apply {
-            path(
-                fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
-            ) {
-                moveTo(239.2f, 212.4f)
-                lineToRelative(-56.0f, -112.0f)
-                arcTo(8.2f, 8.2f, 0.0f, false, false, 176.0f, 96.0f)
-                arcToRelative(7.9f, 7.9f, 0.0f, false, false, -7.1f, 4.4f)
-                lineToRelative(-21.7f, 43.4f)
-                arcTo(87.4f, 87.4f, 0.0f, false, true, 100.0f, 126.9f)
-                arcTo(103.5f, 103.5f, 0.0f, false, false, 127.7f, 64.0f)
-                horizontalLineTo(152.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 0.0f, -16.0f)
-                horizontalLineTo(96.0f)
-                verticalLineTo(32.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, -16.0f, 0.0f)
-                verticalLineTo(48.0f)
-                horizontalLineTo(24.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 0.0f, 16.0f)
-                horizontalLineToRelative(87.6f)
-                arcTo(87.0f, 87.0f, 0.0f, false, true, 88.0f, 116.3f)
-                arcToRelative(87.1f, 87.1f, 0.0f, false, true, -19.0f, -31.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, -15.1f, 5.4f)
-                arcTo(103.8f, 103.8f, 0.0f, false, false, 76.0f, 126.9f)
-                arcTo(87.1f, 87.1f, 0.0f, false, true, 24.0f, 144.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 0.0f, 16.0f)
-                arcToRelative(103.6f, 103.6f, 0.0f, false, false, 64.0f, -22.1f)
-                arcToRelative(103.6f, 103.6f, 0.0f, false, false, 51.5f, 21.3f)
-                lineToRelative(-26.6f, 53.2f)
-                arcToRelative(8.1f, 8.1f, 0.0f, false, false, 3.5f, 10.8f)
-                arcToRelative(8.2f, 8.2f, 0.0f, false, false, 10.8f, -3.6f)
-                lineTo(141.0f, 192.0f)
-                horizontalLineToRelative(70.1f)
-                lineToRelative(13.8f, 27.6f)
-                arcTo(7.9f, 7.9f, 0.0f, false, false, 232.0f, 224.0f)
-                arcToRelative(9.4f, 9.4f, 0.0f, false, false, 3.6f, -0.8f)
-                arcTo(8.2f, 8.2f, 0.0f, false, false, 239.2f, 212.4f)
-                close()
-                moveTo(149.0f, 176.0f)
-                lineToRelative(27.0f, -54.1f)
-                lineTo(203.1f, 176.0f)
-                close()
-            }
-        }
-            .build()
-        return _translate!!
-    }
+// Builder:
+// A class for building ImageVector objects.
+// Provides methods for defining the icon's paths, colors, and other properties.
 
-private var _translate: ImageVector? = null
+// path:
+// A method for defining a path in the ImageVector object.
+// Takes a PathFillType parameter, which specifies how the path should be filled.
+// In this case, the path is filled with a SolidColor using the NonZero PathFillType.
 
+// SolidColor:
+// A class representing a solid color.
+// Provides a constructor for creating a SolidColor object with a given color value.
 
+// StrokeCap.Companion.Butt:
+// An enum value representing the butt stroke cap style.
+// Specifies how the ends of strokes should be drawn.
 
-@Preview
-@Composable
-fun TranslatePreview() {
-    Image(
-        Phosphor.Translate,
-        null
-    )
-}
+// StrokeJoin.Companion.Miter:
+// An enum value representing the miter stroke join style.
+// Specifies how the corners of strokes should be drawn.
+
+// NonZero:
+// An enum value representing the non-zero PathFillType.
+// Specifies that the path should be filled only if it has a non-zero winding count.
+
+// moveTo:
+// A method for moving the drawing cursor to a new position.
+
+// lineTo:
+// A method for drawing a line from the current position to a new position.
+
+// arcTo:
+// A method for drawing an arc between two lines.
+// Takes several parameters for defining the arc's properties such as the sweep angle, x and y radii, and the end point.
+
+// horizontalLineTo:
+// A method for drawing a horizontal line to a new x position.
+
+// verticalLineTo:
+// A method for drawing a vertical line to a new y position.
+
+// arcToRelative:
+// A method for drawing an arc relative to the current position.
+// Takes several parameters for defining the arc's properties such as the sweep angle, x and y radii, and the end point.
+
+// close:
+// A method for closing the current path.
+
+// build:
+// A method for building the ImageVector object.
+// Creates and returns an ImageVector object with the defined paths, colors, and other properties.
+
+// Preview:
+// An annotation for previewing the composable function.
+
+// TranslatePreview:
+// A composable function for previewing the "Translate" icon.
+
+// Image:
+// A composable function for displaying an image.
+// Takes an ImageVector object and a modifier as parameters.
+
+// null:
+// A value representing a null reference.
+// In this case, it is used as the value for the contentDescription parameter, which is optional.
