@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.services
 
 import android.content.BroadcastReceiver
@@ -25,20 +26,33 @@ import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.utils.scheduleAlarmsOnce
 import java.lang.ref.WeakReference
 
+/**
+ * A BroadcastReceiver that listens for the `ACTION_BOOT_COMPLETED` Intent, which is broadcast when the system has finished booting.
+ * This receiver is used to schedule alarms for backup tasks when the device is powered on.
+ */
 class BootReceiver : BroadcastReceiver() {
 
+    /**
+     * Called when the BroadcastReceiver is receiving an Intent broadcast.
+     * This method is called on the main thread, so any long-running operations should be offloaded to a separate thread.
+     *
+     * @param context The Context in which the receiver is running.
+     * @param intent The Intent being received.
+     */
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+            // Get a reference to the ScheduleDao to query the database for scheduled backup tasks
             val scheduleDao = OABX.db.getScheduleDao()
+
+            // Start a new thread to schedule alarms for backup tasks
             Thread(DatabaseRunnable(context, scheduleDao)).start()
-        } else return
-    }
-
-    private class DatabaseRunnable(val context: Context, scheduleDao: ScheduleDao) : Runnable {
-        private val scheduleDaoReference: WeakReference<ScheduleDao> = WeakReference(scheduleDao)
-
-        override fun run() {
-            scheduleAlarmsOnce()
+        } else {
+            // If the Intent action is not ACTION_BOOT_COMPLETED, do nothing and return
+            return
         }
     }
-}
+
+    /**
+     * A Runnable that is used to schedule alarms for backup tasks on a separate thread.
+     * This class holds a weak reference to the ScheduleDao to avoid memory leaks.
+    
