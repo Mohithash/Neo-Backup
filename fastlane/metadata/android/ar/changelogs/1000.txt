@@ -1,2 +1,10 @@
-** OAndBackupX 1.0.0 **
-* أضيف: خيار لمسح ذاكرة التخزين المؤقت قبل النسخ الاحتياطي للبيانات
+/**
+ * OAndBackupX 1.0.0
+ * 
+ * New Feature: Added an option to clear temporary storage before taking a backup of data
+ * 
+ * This feature was added to improve the efficiency of the backup process by clearing
+ * any unnecessary temporary files that may be taking up space in the device's storage.
+ * The user now has the option to enable this feature before initiating a backup, which
+ * will result in a more streamlined and optimized backup process.
+ */
