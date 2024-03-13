@@ -1,10 +1,8 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
@@ -16,18 +14,22 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// XCircle: ImageVector constant
 val Phosphor.XCircle: ImageVector
     get() {
+        // Lazy initialization of the ImageVector constant
         if (_x_circle != null) {
             return _x_circle!!
         }
         _x_circle = Builder(
+            // Set the name, default width and height, and viewport width and height
             name = "X-circle",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the shape of the vector image using the path method
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
@@ -44,33 +46,4 @@ val Phosphor.XCircle: ImageVector
                 moveTo(165.7f, 154.3f)
                 arcToRelative(8.1f, 8.1f, 0.0f, false, true, 0.0f, 11.4f)
                 arcToRelative(8.2f, 8.2f, 0.0f, false, true, -11.4f, 0.0f)
-                lineTo(128.0f, 139.3f)
-                lineToRelative(-26.3f, 26.4f)
-                arcToRelative(8.2f, 8.2f, 0.0f, false, true, -11.4f, 0.0f)
-                arcToRelative(8.1f, 8.1f, 0.0f, false, true, 0.0f, -11.4f)
-                lineTo(116.7f, 128.0f)
-                lineTo(90.3f, 101.7f)
-                arcToRelative(8.1f, 8.1f, 0.0f, false, true, 11.4f, -11.4f)
-                lineTo(128.0f, 116.7f)
-                lineToRelative(26.3f, -26.4f)
-                arcToRelative(8.1f, 8.1f, 0.0f, false, true, 11.4f, 11.4f)
-                lineTo(139.3f, 128.0f)
-                close()
-            }
-        }
-            .build()
-        return _x_circle!!
-    }
-
-private var _x_circle: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun XCirclePreview() {
-    Image(
-        Phosphor.XCircle,
-        null
-    )
-}
+                lineTo(128.0f
