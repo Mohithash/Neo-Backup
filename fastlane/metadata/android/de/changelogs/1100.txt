@@ -1,6 +1,4 @@
-**OAndBackupX 1.1.0**
-* Hinzugefügt: Verschlüsselung der Datensicherung
-* Behoben: geplante Aufgaben
-* Aktualisiert: Format der Benachrichtigungen
-* einige Benutzeroberflächen-Elemente optimiert
-* und verbesserte Leistung
+# OAndBackupX 1.1.0
+# ==============
+
+# Added:
