@@ -1,26 +1,16 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
+// This file defines a Phosphor icon for "Export"
 
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-
+// The Phosphor class provides an ImageVector object for the Export icon
 val Phosphor.Export: ImageVector
     get() {
+        // If the ImageVector object for the Export icon has already been created, return it
         if (_export != null) {
             return _export!!
         }
+
+        // Otherwise, create a new ImageVector object for the Export icon
         _export = Builder(
             name = "Export",
             defaultWidth = 24.0.dp,
@@ -28,11 +18,13 @@ val Phosphor.Export: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the path for the Export icon using a SolidColor brush
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // Define the shape of the Export icon using a series of lines and curves
                 moveTo(80.3f, 63.6f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, 0.0f, -11.3f)
                 lineToRelative(42.0f, -42.0f)
@@ -71,10 +63,11 @@ val Phosphor.Export: ImageVector
         return _export!!
     }
 
+// Cache the ImageVector object for the Export icon to improve performance
 private var _export: ImageVector? = null
 
 
-
+// This Preview function allows you to see what the Export icon looks like
 @Preview
 @Composable
 fun ExportPreview() {
@@ -83,3 +76,4 @@ fun ExportPreview() {
         null
     )
 }
+
