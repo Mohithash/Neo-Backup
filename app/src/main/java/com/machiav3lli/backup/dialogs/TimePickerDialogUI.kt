@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
@@ -42,45 +43,3 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TimePickerDialogUI(
-    state: TimePickerState,
-    openDialogCustom: MutableState<Boolean>,
-    onSave: (hour: Int, minute: Int) -> Unit,
-) {
-    val context = LocalContext.current
-
-    Card(
-        shape = MaterialTheme.shapes.extraLarge,
-        modifier = Modifier.padding(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.schedule),
-                style = MaterialTheme.typography.titleLarge
-            )
-            TimePicker(state)
-            Row(
-                Modifier.fillMaxWidth()
-            ) {
-                ActionButton(text = stringResource(id = R.string.dialogCancel)) {
-                    openDialogCustom.value = false
-                }
-                Spacer(Modifier.weight(1f))
-                ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    onSave(state.hour, state.minute)
-                    openDialogCustom.value = false
-                }
-            }
-        }
-    }
-}
