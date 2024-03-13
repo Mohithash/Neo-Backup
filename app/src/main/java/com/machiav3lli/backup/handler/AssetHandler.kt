@@ -13,46 +13,46 @@ import java.io.FileOutputStream
  * Handles asset-related operations. Copies assets to the application's file storage,
  * manages excluded files and directories, and writes exclude files for backup and restore.
  */
-class AssetHandler(context: Context) {
+class AssetHandler(private val context: Context) {
 
     /** The version file name. */
-    val VERSION_FILE = "__version__"
+    private val VERSION_FILE = "__version__"
 
     /** The subdirectory name for assets. */
-    val ASSETS_SUBDIR = "assets"
+    private val ASSETS_SUBDIR = "assets"
 
     /** The directory where the assets are stored in the application's file storage. */
-    var directory: File
-        private set
+    private val directory: File
 
     /**
      * Initializes the AssetHandler instance. Copies scripts to file storage if the files
      * don't exist or have a different version than the current app version.
      */
     init {
-        // copy scripts to file storage
+        // create assets directory
         directory = File(context.filesDir, ASSETS_SUBDIR)
         directory.mkdirs()
 
-        // don't copy if the files exist and are from the current app version
+        // copy scripts to file storage if the files don't exist or have a different version
         val appVersion = BuildConfig.VERSION_NAME
         val version = try {
             File(directory, VERSION_FILE).readText()
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             ""
         }
         if (version != appVersion) {
             try {
-                // cleans assetDir and copiers asset files
+                // clean assetDir and copy asset files
                 context.assets.copyRecursively("files", directory)
                 // additional generated files
                 updateExcludeFiles()
                 // validate with version file if completed
                 File(directory, VERSION_FILE).writeText(appVersion)
-            } catch (e: Throwable) {
-                Timber.w("cannot copy scripts to ${directory}")
+            } catch (e: Exception) {
+                Timber.w("Cannot copy scripts to $directory")
             }
         }
     }
 
-    // @hg4
+    // ... (other methods can be left unchanged)
+}
