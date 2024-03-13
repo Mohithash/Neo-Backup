@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,33 +30,37 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 
+// BaseDialog: A composable function to create a dialog with custom UI and dismiss behavior
 @Composable
 fun BaseDialog(
-    openDialogCustom: MutableState<Boolean>,
-    dialogUI: @Composable (() -> Unit),
+    openDialogCustom: MutableState<Boolean>, // MutableState to control dialog visibility
+    dialogUI: @Composable (() -> Unit) // Function to define the dialog content
 ) {
     Dialog(
-        onDismissRequest = { openDialogCustom.value = false },
+        onDismissRequest = { openDialogCustom.value = false }, // Dismiss the dialog when the back layer is clicked
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        dialogUI()
+        dialogUI() // Render the dialog content
     }
 }
 
+// ActionsDialogUI: A composable function to create a dialog with title, message, and actions
 @Composable
 fun ActionsDialogUI(
-    titleText: String,
-    messageText: String,
-    openDialogCustom: MutableState<Boolean>,
-    primaryText: String,
-    primaryIcon: ImageVector? = null,
-    primaryAction: (() -> Unit) = {},
-    secondaryText: String = "",
-    secondaryIcon: ImageVector? = null,
-    secondaryAction: (() -> Unit)? = null,
+    titleText: String, // Title text for the dialog
+    messageText: String, // Message text for the dialog
+    openDialogCustom: MutableState<Boolean>, // MutableState to control dialog visibility
+    primaryText: String, // Text for the primary action button
+    primaryIcon: ImageVector? = null, // Icon for the primary action button
+    primaryAction: (() -> Unit) = {}, // Function for the primary action button
+    secondaryText: String = "", // Text for the secondary action button
+    secondaryIcon: ImageVector? = null, // Icon for the secondary action button
+    secondaryAction: (() -> Unit)? = null // Function for the secondary action button
 ) {
+    // Initialize scroll state for the message content
     val scrollState = rememberScrollState()
 
+    // Card for the dialog content
     Card(
         shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier.padding(8.dp),
@@ -71,7 +74,9 @@ fun ActionsDialogUI(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Title text
             Text(text = titleText, style = MaterialTheme.typography.titleLarge)
+            // Message content
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
@@ -80,13 +85,15 @@ fun ActionsDialogUI(
             ) {
                 Text(text = messageText, style = MaterialTheme.typography.bodyMedium)
             }
-
+            // Row for primary and secondary action buttons
             Row(
                 Modifier.fillMaxWidth()
             ) {
+                // Cancel button
                 ActionButton(text = stringResource(id = R.string.dialogCancel)) {
                     openDialogCustom.value = false
                 }
+                // Spacer and secondary action button if provided
                 Spacer(Modifier.weight(1f))
                 if (secondaryAction != null && secondaryText.isNotEmpty()) {
                     ElevatedActionButton(
@@ -99,6 +106,7 @@ fun ActionsDialogUI(
                     }
                     Spacer(Modifier.requiredWidth(8.dp))
                 }
+                // Primary action button
                 ElevatedActionButton(
                     text = primaryText,
                     icon = primaryIcon,
@@ -111,45 +119,16 @@ fun ActionsDialogUI(
     }
 }
 
+// BatchActionDialogUI: A composable function to create a dialog for batch actions
 @Composable
 fun BatchActionDialogUI(
-    backupBoolean: Boolean,
-    selectedPackageInfos: List<PackageInfo>,
-    selectedApk: Map<String, Int>,
-    selectedData: Map<String, Int>,
-    openDialogCustom: MutableState<Boolean>,
-    primaryAction: (() -> Unit) = {},
+    backupBoolean: Boolean, // Flag to determine backup or restore action
+    selectedPackageInfos: List<PackageInfo>, // List of selected PackageInfo objects
+    selectedApk: Map<String, Int>, // Map of selected APKs
+    selectedData: Map<String, Int>, // Map of selected data
+    openDialogCustom: MutableState<Boolean>, // MutableState to control dialog visibility
+    primaryAction: (() -> Unit) = {} // Function for the primary action button
 ) {
+    // Build the message text based on the selected PackageInfo objects
     val message = StringBuilder()
-    selectedPackageInfos.forEach { pi ->
-        message.append(pi.packageLabel)
-        message.append(
-            ": ${
-                stringResource(
-                    id = when {
-                        selectedApk[pi.packageName] != null && selectedData[pi.packageName] != null -> R.string.handleBoth
-                        selectedApk[pi.packageName] != null                                         -> R.string.handleApk
-                        selectedData[pi.packageName] != null                                        -> R.string.handleData
-                        else                                                                        -> R.string.errorDialogTitle
-                    }
-                )
-            }\n"
-        )
-    }
-
-    ActionsDialogUI(
-        titleText = stringResource(
-            id = if (backupBoolean) R.string.backupConfirmation
-            else R.string.restoreConfirmation
-        ),
-        messageText = message.toString().trim { it <= ' ' },
-        openDialogCustom = openDialogCustom,
-        primaryText = stringResource(
-            id = if (backupBoolean) R.string.backup
-            else R.string.restore
-        ),
-        primaryIcon = if (backupBoolean) Phosphor.ArchiveTray
-        else Phosphor.ClockCounterClockwise,
-        primaryAction = primaryAction,
-    )
-}
+    selectedPackageInfos
