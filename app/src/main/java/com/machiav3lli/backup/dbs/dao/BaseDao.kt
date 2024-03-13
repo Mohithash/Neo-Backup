@@ -1,40 +1,43 @@
-/*
- * OAndBackupX: open-source apps backup and restore app.
- * Copyright (C) 2020  Antonios Hazim
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+/**
+ * A generic DAO (Data Access Object) interface for performing CRUD (Create, Read, Update, Delete) operations
+ * on a specific data entity.
  */
-package com.machiav3lli.backup.dbs.dao
-
-import android.database.SQLException
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Update
-
 interface BaseDao<T> {
+
+    /**
+     * Inserts the given product(s) into the database.
+     *
+     * @param product one or more instances of the data entity to be inserted.
+     * @throws SQLException if there is an error while inserting the data.
+     */
     @Insert
     @Throws(SQLException::class)
     fun insert(vararg product: T)
 
+    /**
+     * Inserts the given product(s) into the database, replacing any existing rows with the same primary key.
+     *
+     * @param product one or more instances of the data entity to be inserted or replaced.
+     * @throws SQLException if there is an error while inserting the data.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     @Throws(SQLException::class)
     fun replaceInsert(vararg product: T)
 
+    /**
+     * Updates the given object(s) in the database.
+     *
+     * @param obj one or more instances of the data entity to be updated.
+     * @return the number of rows updated.
+     */
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(vararg obj: T): Int
 
+    /**
+     * Deletes the given object from the database.
+     *
+     * @param obj the instance of the data entity to be deleted.
+     */
     @Delete
     fun delete(obj: T)
 }
