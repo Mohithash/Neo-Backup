@@ -3,28 +3,31 @@ package com.machiav3lli.backup.ui.compose.icons.phosphor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// BluetoothSlash ImageVector property
 val Phosphor.`Bluetooth-slash`: ImageVector
     get() {
+        // Check if the ImageVector has already been created
         if (`_bluetooth-slash` != null) {
             return `_bluetooth-slash`!!
         }
+        // Build the ImageVector if it hasn't been created
         `_bluetooth-slash` = Builder(
             name = "Bluetooth-slash", defaultWidth = 256.0.dp,
             defaultHeight = 256.0.dp, viewportWidth = 256.0f, viewportHeight = 256.0f
         ).apply {
+            // Path with a solid color fill
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // Path data
                 moveTo(213.9f, 210.6f)
                 lineToRelative(-31.4f, -34.5f)
                 horizontalLineToRelative(0.0f)
@@ -62,14 +65,4 @@ val Phosphor.`Bluetooth-slash`: ImageVector
                 arcToRelative(7.8f, 7.8f, 0.0f, false, true, -6.4f, -3.2f)
                 arcToRelative(7.9f, 7.9f, 0.0f, false, true, 1.6f, -11.2f)
                 lineToRelative(25.0f, -18.7f)
-                lineTo(128.0f, 48.0f)
-                verticalLineTo(71.6f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, true, -16.0f, 0.0f)
-                close()
-            }
-        }
-            .build()
-        return `_bluetooth-slash`!!
-    }
-
-private var `_bluetooth-slash`: ImageVector? = null
+                lineTo(128
