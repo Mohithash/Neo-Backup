@@ -28,17 +28,17 @@ class AlarmReceiver : BroadcastReceiver() {
 
     // onReceive: Called when the BroadcastReceiver is triggered.
     // Extracts the scheduleId from the Intent and starts the ScheduleService.
-    override fun onReceive(context: Context?, intent: Intent?) {
-        // Extracts the scheduleId from the Intent, defaulting to -1 if it's not present.
-        val scheduleId = intent?.getLongExtra("scheduleId", -1)
-        
+    override fun onReceive(context: Context, intent: Intent) {
+        // Extracts the scheduleId from the Intent, using null as the default value.
+        val scheduleId = intent.getLongExtra("scheduleId", -1L)
+
         // Creates an Intent to start the ScheduleService.
         val serviceIntent = Intent(context, ScheduleService::class.java)
-        
+
         // Puts the scheduleId into the Intent.
         serviceIntent.putExtra("scheduleId", scheduleId)
-        
+
         // Starts the ScheduleService.
-        context?.startService(serviceIntent)
+        context.startService(serviceIntent)
     }
 }
