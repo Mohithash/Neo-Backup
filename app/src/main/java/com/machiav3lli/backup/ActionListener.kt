@@ -1,5 +1,6 @@
 /*
  * OAndBackupX: open-source apps backup and restore app.
+ *
  * Copyright (C) 2020  Antonios Hazim
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,11 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup
+package com.machiav3lli.backup;
 
-import com.machiav3lli.backup.dbs.entity.Backup
-import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
+import com.machiav3lli.backup.dbs.entity.Backup;
+import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType;
 
-interface ActionListener {
-    fun onActionCalled(actionType: ActionType?, mode: Int, backup: Backup?)
+/**
+ * Listener interface for handling action events in the OAndBackupX app.
+ */
+public interface ActionListener {
+
+    /**
+     * Called when an action is triggered.
+     *
+     * @param actionType The type of action that was called.
+     * @param mode       The mode in which the action was called.
+     * @param backup     The backup for which the action was called, or null if not applicable.
+     */
+    void onActionCalled(ActionType actionType, int mode, Backup backup);
 }
