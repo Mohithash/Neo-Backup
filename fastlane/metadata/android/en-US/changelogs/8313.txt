@@ -1,6 +1,14 @@
-Add: Animate navigation bar buttons
-Fix: Running schedules when app is not open
-Fix: Missing stub for restorePackage in specials
-Fix: NavBar overlap of sheets
-Fix: Crash on restarting app with open AppSheet
-+ more than 10 translation contributions
+// ADD: Animate navigation bar buttons
+// This addition will implement a animation effect on the navigation bar buttons.
+// Users will now experience a smooth transition when interacting with the buttons.
+
+// FIX: Running schedules when app is not open
+// This fix resolves the issue where schedules were not running when the app was not open.
+// Now, schedules will be executed at the designated times, ensuring timely notifications and updates.
+
+// FIX: Missing stub for restorePackage in specials
+// This fix addresses the missing stub for restorePackage in the specials section.
+// The restoration process for packages will now function correctly, improving the user experience.
+
+// FIX: NavBar overlap of sheets
+
