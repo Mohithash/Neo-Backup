@@ -1,9 +1,12 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
+// This file contains the SelectionInverse icon for the Phosphor icon set.
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+
+// The SelectionInverse icon is a part of the Phosphor icon set.
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
@@ -16,11 +19,15 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// These imports are required for creating and rendering the SelectionInverse icon.
+
 val Phosphor.SelectionInverse: ImageVector
     get() {
         if (_selection_inverse != null) {
             return _selection_inverse!!
         }
+        // This block of code creates the SelectionInverse icon using the Builder class.
+
         _selection_inverse = Builder(
             name = "Selection-inverse",
             defaultWidth = 24.0.dp,
@@ -33,6 +40,8 @@ val Phosphor.SelectionInverse: ImageVector
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // This block of code defines the shape of the SelectionInverse icon using paths.
+
                 moveTo(152.0f, 216.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, -8.0f, 8.0f)
                 lineTo(112.0f, 224.0f)
@@ -68,32 +77,4 @@ val Phosphor.SelectionInverse: ImageVector
                 lineTo(48.0f, 72.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, -16.0f, 0.0f)
                 lineTo(32.0f, 48.0f)
-                arcToRelative(16.4f, 16.4f, 0.0f, false, true, 4.1f, -10.7f)
-                lineToRelative(0.6f, -0.6f)
-                lineToRelative(0.6f, -0.6f)
-                arcTo(16.4f, 16.4f, 0.0f, false, true, 48.0f, 32.0f)
-                lineTo(208.0f, 32.0f)
-                arcToRelative(16.0f, 16.0f, 0.0f, false, true, 16.0f, 16.0f)
-                close()
-                moveTo(208.0f, 48.0f)
-                lineTo(59.3f, 48.0f)
-                lineTo(208.0f, 196.7f)
-                close()
-            }
-        }
-            .build()
-        return _selection_inverse!!
-    }
-
-private var _selection_inverse: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun SelectionInversePreview() {
-    Image(
-        Phosphor.SelectionInverse,
-        null
-    )
-}
+                arcToRelative(16.4f, 16.
