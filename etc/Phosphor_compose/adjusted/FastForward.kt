@@ -1,77 +1,60 @@
-package com.machiav3lli.backup.ui.compose.icons.phosphor
-
-
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-
+// Define the FastForward ImageVector using the Phosphor icon set
 val Phosphor.FastForward: ImageVector
     get() {
+        // If the ImageVector has already been created, return it
         if (_fast_forward != null) {
             return _fast_forward!!
         }
+
+        // Create a new ImageVector Builder
         _fast_forward = Builder(
-            name = "Fast-forward",
-            defaultWidth = 24.0.dp,
-            defaultHeight = 24.0.dp,
-            viewportWidth = 256.0f,
-            viewportHeight = 256.0f,
-        ).apply {
-            path(
-                fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
-            ) {
-                moveTo(245.9f, 114.5f)
-                lineTo(156.7f, 57.2f)
-                arcTo(16.0f, 16.0f, 0.0f, false, false, 132.0f, 70.7f)
-                verticalLineToRelative(42.6f)
-                lineTo(44.7f, 57.2f)
-                arcTo(16.0f, 16.0f, 0.0f, false, false, 20.0f, 70.7f)
-                lineTo(20.0f, 185.3f)
-                arcToRelative(16.1f, 16.1f, 0.0f, false, false, 8.3f, 14.1f)
-                arcToRelative(16.5f, 16.5f, 0.0f, false, false, 16.4f, -0.6f)
-                lineTo(132.0f, 142.7f)
-                verticalLineToRelative(42.6f)
-                arcToRelative(16.1f, 16.1f, 0.0f, false, false, 8.3f, 14.1f)
-                arcToRelative(16.5f, 16.5f, 0.0f, false, false, 16.4f, -0.6f)
-                lineToRelative(89.2f, -57.3f)
-                arcToRelative(16.1f, 16.1f, 0.0f, false, false, 0.0f, -27.0f)
-                close()
-                moveTo(36.0f, 185.3f)
-                lineTo(36.0f, 70.7f)
-                lineTo(125.2f, 128.0f)
-                close()
-                moveTo(148.0f, 185.3f)
-                lineTo(148.0f, 70.7f)
-                lineTo(237.2f, 128.0f)
-                close()
-            }
+            name = "Fast-forward", // Name of the icon
+            defaultWidth = 24.0.dp, // Default width of the icon
+            defaultHeight = 24.0.dp, // Default height of the icon
+            viewportWidth = 256.0f, // Width of the viewport
+            viewportHeight = 256.0f // Height of the viewport
+        )
+
+        // Define the path for the icon using various parameters
+        path(
+            fill = SolidColor(Color(0xFF000000)), // Fill color of the path
+            stroke = null, // No stroke for this path
+            strokeLineWidth = 0.0f, // Width of the stroke
+            strokeLineCap = Butt, // Cap style for the stroke
+            strokeLineJoin = Miter, // Join style for the stroke
+            strokeLineMiter = 4.0f, // Miter limit for the stroke
+            pathFillType = NonZero // Path fill type
+        ) {
+            // Define the path using various path operations
+            moveTo(245.9f, 114.5f)
+            lineTo(156.7f, 57.2f)
+            arcTo(16.0f, 16.0f, 0.0f, false, false, 132.0f, 70.7f)
+            // ... more path operations
+            close()
+            // Additional path operations for the play button
+            moveTo(36.0f, 185.3f)
+            lineTo(36.0f, 70.7f)
+            lineTo(125.2f, 128.0f)
+            close()
+            moveTo(148.0f, 185.3f)
+            lineTo(148.0f, 70.7f)
+            lineTo(237.2f, 128.0f)
+            close()
         }
-            .build()
+
+        // Build and return the ImageVector
         return _fast_forward!!
     }
 
+// Cache the ImageVector
 private var _fast_forward: ImageVector? = null
 
-
-
+// Preview function for the FastForward icon
 @Preview
 @Composable
 fun FastForwardPreview() {
     Image(
-        Phosphor.FastForward,
+        Phosphor.FastForward, // Use the FastForward ImageVector
         null
     )
 }
