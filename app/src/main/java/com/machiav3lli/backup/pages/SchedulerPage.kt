@@ -29,13 +29,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -56,14 +57,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun SchedulerPage(viewModel: SchedulerViewModel) {
     val context = LocalContext.current
-    val mScope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     val schedules by viewModel.schedules.collectAsState(emptyList())
-    val scheduleSheetId = remember { mutableLongStateOf(-1L) }
-    val scheduleSheetState = rememberModalBottomSheetState(true)
-    val scheduleSheetVM = remember(scheduleSheetId.longValue) {
+    val selectedScheduleId = remember { mutableStateOf<Long?>(null) }
+    val sheetState = rememberModalBottomSheetState(true)
+    val sheetViewModel = remember(selectedScheduleId.value) {
         ScheduleViewModel(
-            scheduleSheetId.longValue,
-            OABX.db.getScheduleDao(),
+            scheduleId = selectedScheduleId.value ?: -1,
+            scheduleDao = OABX.db.getScheduleDao(),
         )
     }
 
@@ -74,7 +75,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 text = { Text(stringResource(id = R.string.sched_add)) },
                 icon = {
                     Icon(
-                        modifier = Modifier.size(ICON_SIZE_SMALL),
+                        modifier = Modifier.size(ICON_SIZE_SMALL.dp),
                         imageVector = Phosphor.CalendarPlus,
                         contentDescription = stringResource(id = R.string.sched_add)
                     )
@@ -82,38 +83,38 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 onClick = { viewModel.addSchedule(specialBackupsEnabled) }
             )
         }
-    ) {
+    ) { paddingValues ->
         ScheduleRecycler(
             modifier = Modifier
                 .blockBorder()
                 .fillMaxSize(),
             productsList = schedules,
-            onClick = { item ->
-                scheduleSheetId.longValue = item.id
+            onClick = { schedule ->
+                selectedScheduleId.value = schedule.id
             },
-            onCheckChanged = { item: Schedule, b: Boolean ->
-                viewModel.updateSchedule(
-                    item.copy(enabled = b),
-                    true,
-                )
+            onCheckChanged = { schedule, enabled ->
+                viewModel.updateSchedule(schedule.copy(enabled = enabled), true)
             }
         )
 
-        if (scheduleSheetId.longValue > 0L) {
-            val dismiss = {
-                mScope.launch { scheduleSheetState.hide() }
-                scheduleSheetId.longValue = -1L
-            }
+        if (selectedScheduleId.value != null && selectedScheduleId.value!! > 0) {
             Sheet(
-                sheetState = scheduleSheetState,
-                onDismissRequest = dismiss,
+                sheetState = sheetState,
+                onDismissRequest = {
+                    scope.launch { sheetState.hide() }
+                    selectedScheduleId.value = null
+                }
             ) {
                 ScheduleSheet(
-                    viewModel = scheduleSheetVM,
-                    scheduleId = scheduleSheetId.longValue,
-                    onDismiss = dismiss
+                    viewModel = sheetViewModel,
+                    scheduleId = selectedScheduleId.value!!,
+                    onDismiss = {
+                        scope.launch { sheetState.hide() }
+                        selectedScheduleId.value = null
+                    }
                 )
             }
         }
     }
 }
+
