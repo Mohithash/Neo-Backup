@@ -1,87 +1,45 @@
-package com.machiav3lli.backup.ui.compose.icons.phosphor
-
-
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-
+// Custom ImageVector object representing the Android logo
 val Phosphor.AndroidLogo: ImageVector
     get() {
+        // Lazily initialize the ImageVector object
         if (_android_logo != null) {
             return _android_logo!!
         }
+
         _android_logo = Builder(
-            name = "Android-logo",
-            defaultWidth = 24.0.dp,
-            defaultHeight = 24.0.dp,
-            viewportWidth = 256.0f,
-            viewportHeight = 256.0f,
+            name = "Android-logo", // Name of the ImageVector object
+            defaultWidth = 24.0.dp, // Default width of the object in Density-independent Pixels (dp)
+            defaultHeight = 24.0.dp, // Default height of the object in dp
+            viewportWidth = 256.0f, // Width of the viewport in pixels
+            viewportHeight = 256.0f // Height of the viewport in pixels
         ).apply {
+            // Define the path of the ImageVector object
             path(
-                fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                fill = SolidColor(Color(0xFF000000)), // Fill color of the path
+                stroke = null, // Stroke color of the path (none in this case)
+                strokeLineWidth = 0.0f, // Width of the stroke line
+                strokeLineCap = Butt, // Cap style of the stroke line
+                strokeLineJoin = Miter, // Join style of the stroke line
+                strokeLineMiter = 4.0f, // Miter limit of the stroke line
+                pathFillType = NonZero // Path fill type (non-zero in this case)
             ) {
-                moveTo(176.0f, 156.0f)
-                arcToRelative(12.0f, 12.0f, 0.0f, true, true, -12.0f, -12.0f)
-                arcTo(12.0f, 12.0f, 0.0f, false, true, 176.0f, 156.0f)
-                close()
-                moveTo(92.0f, 144.0f)
-                arcToRelative(12.0f, 12.0f, 0.0f, true, false, 12.0f, 12.0f)
-                arcTo(12.0f, 12.0f, 0.0f, false, false, 92.0f, 144.0f)
-                close()
-                moveTo(240.0f, 168.0f)
-                verticalLineToRelative(24.0f)
-                arcToRelative(16.0f, 16.0f, 0.0f, false, true, -16.0f, 16.0f)
-                lineTo(32.0f, 208.0f)
-                arcToRelative(16.0f, 16.0f, 0.0f, false, true, -16.0f, -16.0f)
-                lineTo(16.0f, 169.1f)
-                arcTo(113.4f, 113.4f, 0.0f, false, true, 51.4f, 86.7f)
-                lineToRelative(-25.1f, -25.0f)
-                arcTo(8.1f, 8.1f, 0.0f, false, true, 37.7f, 50.3f)
-                lineTo(63.8f, 76.5f)
-                arcToRelative(111.5f, 111.5f, 0.0f, false, true, 128.6f, -0.2f)
-                lineToRelative(25.9f, -26.0f)
-                arcToRelative(8.1f, 8.1f, 0.0f, false, true, 11.4f, 11.4f)
-                lineTo(204.8f, 86.5f)
-                lineToRelative(2.3f, 2.2f)
-                arcTo(111.2f, 111.2f, 0.0f, false, true, 240.0f, 168.0f)
-                close()
-                moveTo(224.0f, 168.0f)
-                arcToRelative(95.3f, 95.3f, 0.0f, false, false, -28.2f, -68.0f)
-                arcToRelative(98.5f, 98.5f, 0.0f, false, false, -7.7f, -6.8f)
-                arcToRelative(0.1f, 0.1f, 0.0f, false, false, -0.1f, -0.1f)
-                arcTo(95.0f, 95.0f, 0.0f, false, false, 128.0f, 72.0f)
-                horizontalLineToRelative(-0.3f)
-                curveTo(74.9f, 72.2f, 32.0f, 115.8f, 32.0f, 169.1f)
-                lineTo(32.0f, 192.0f)
-                lineTo(224.0f, 192.0f)
-                close()
+                // Define the shape of the path using a series of moveTo, lineTo, arcTo, and close() commands
             }
         }
-            .build()
-        return _android_logo!!
+            .build() // Build the ImageVector object
+
+        return _android_logo!! // Return the ImageVector object
     }
 
+// Lazily initialized variable to store the ImageVector object
 private var _android_logo: ImageVector? = null
 
-
-
+// Preview function to display the AndroidLogo in the Composable preview pane
 @Preview
 @Composable
 fun AndroidLogoPreview() {
     Image(
-        Phosphor.AndroidLogo,
-        null
+        Phosphor.AndroidLogo, // Use the AndroidLogo ImageVector object
+        null // Modifier for the Image (none in this case)
     )
 }
