@@ -1,10 +1,7 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
@@ -13,6 +10,7 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.modifier
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
@@ -78,26 +76,4 @@ val Phosphor.SortAscending: ImageVector
                 arcToRelative(8.0f, 8.0f, 0.0f, false, false, 0.0f, 16.0f)
                 close()
                 moveTo(104.0f, 184.0f)
-                lineTo(48.0f, 184.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 0.0f, 16.0f)
-                horizontalLineToRelative(56.0f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 0.0f, -16.0f)
-                close()
-            }
-        }
-            .build()
-        return _sort_ascending!!
-    }
-
-private var _sort_ascending: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun SortAscendingPreview() {
-    Image(
-        Phosphor.SortAscending,
-        null
-    )
-}
+                lineTo(48.0f, 18
