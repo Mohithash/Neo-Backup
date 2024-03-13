@@ -1,26 +1,10 @@
-package com.machiav3lli.backup.ui.compose.icons.phosphor
-
-
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-
+// Define the Phosphor.Info ImageVector using a Builder function
 val Phosphor.Info: ImageVector
     get() {
         if (_info != null) {
             return _info!!
         }
+        // Initialize _info with the ImageVector created by the Builder
         _info = Builder(
             name = "Info",
             defaultWidth = 24.0.dp,
@@ -28,11 +12,13 @@ val Phosphor.Info: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the path for the Info icon using a SolidColor brush with black color
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // Define the shape of the Info icon using path commands
                 moveTo(128.0f, 24.0f)
                 arcTo(104.0f, 104.0f, 0.0f, true, false, 232.0f, 128.0f)
                 arcTo(104.1f, 104.1f, 0.0f, false, false, 128.0f, 24.0f)
@@ -58,19 +44,20 @@ val Phosphor.Info: ImageVector
                 close()
             }
         }
+            // Build and return the ImageVector
             .build()
         return _info!!
     }
 
+// Cache the ImageVector
 private var _info: ImageVector? = null
 
-
-
+// Preview function for the Info icon
 @Preview
 @Composable
 fun InfoPreview() {
     Image(
-        Phosphor.Info,
+        Phosphor.Info, // Use the Info ImageVector
         null
     )
 }
