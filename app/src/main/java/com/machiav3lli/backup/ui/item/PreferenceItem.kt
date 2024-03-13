@@ -1,23 +1,8 @@
-package com.machiav3lli.backup.ui.item
+// Import necessary classes and functions
 
-import androidx.annotation.StringRes
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.preferences.publicPreferences
-import com.machiav3lli.backup.tracePrefs
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-open class Pref(
+// Base Pref class for all preference types
+class Pref(
+    // Properties for the preference, such as key, default value, title, etc.
     var key: String,
     val private: Boolean = false,
     val defaultValue: Any? = null,
@@ -30,17 +15,25 @@ open class Pref(
     val onChanged: ((Pref) -> Unit)? = null,
     var group: String = "",
 ) {
+    // Companion object for utility functions and constants
     companion object {
-
+        // Map to store preference groups and their preferences
         val prefGroups: MutableMap<String, MutableList<Pref>> = mutableMapOf()
+        // Computed property to get all preferences
         val prefs get() = prefGroups.values.flatten()
+        // Counter for locked actions
         var lockedActions = 0
 
+        // Map to store preference change listeners
         val prefChangeListeners = mutableStateMapOf<Pref, (pref: Pref) -> Unit>()
+        // Function to handle preference changes
         private fun onPrefChange(name: String) {
+            // Iterate through all preference change listeners
             prefChangeListeners.forEach { (pref, listener) ->
+                // Call the listener with the updated preference
                 listener(pref)
             }
+            // Find the preference with the given name and call its onChanged function
             prefs.find { it.key == name }?.let { pref ->
                 pref.onChanged?.let { onChanged ->
                     MainScope().launch {
@@ -52,12 +45,14 @@ open class Pref(
             }
         }
 
+        // Function to get the SharedPreferences object
         private fun getPrefs(private: Boolean = false) =
             if (private)
                 OABX.context.getPrivateSharedPrefs()
             else
                 OABX.context.getDefaultSharedPreferences()
 
+        // Functions to get and set preference flags, strings, and integers
         fun prefFlag(name: String, default: Boolean, private: Boolean = false) =
             try {
                 getPrefs(private).getBoolean(name, default)
@@ -97,6 +92,7 @@ open class Pref(
             onPrefChange(name)
         }
 
+        // Functions to escape and unescape strings
         private val toBeEscaped =
             Regex("""[\\"\n\r\t]""")      // blacklist, only escape those that are necessary
 
@@ -127,6 +123,7 @@ open class Pref(
             }
         }
 
+        // Functions to convert preferences to and from a simple format
         fun toSimpleFormat(entries: Map<String, Any>): String {
             return entries.toSortedMap().mapNotNull {
                 when (it.value) {
@@ -149,347 +146,4 @@ open class Pref(
                     when {
                         value.startsWith('"')
                                 && value.endsWith('"') -> {
-                            value = unescape(value.removeSurrounding("\""))
-                            map.put(key, value)
-                        }
-
-                        value == "true"                -> {
-                            map.put(key, true)
-                        }
-
-                        value == "false"               -> {
-                            map.put(key, false)
-                        }
-
-                        else                           -> {
-                            map.put(key, value.toInt())
-                        }
-                    }
-                }
-            }
-            return map
-        }
-
-        fun preferencesToSerialized(): String {
-
-            val prefs: Map<String, Any> =
-                publicPreferences().mapNotNull { pref ->
-                    try {
-                        when (pref) {
-                            // order from derived to base classes (otherwise base would obscure derived)
-                            is EnumPref    -> pref.key to pref.value
-                            is ListPref    -> pref.key to pref.value
-                            //is PasswordPref -> pref.key to pref.value     // don't store
-                            is StringPref  -> pref.key to pref.value
-                            is BooleanPref -> pref.key to pref.value
-                            is IntPref     -> pref.key to pref.value
-                            else           -> null
-                        }
-                    } catch (e: Throwable) {
-                        LogsHandler.unexpectedException(e)
-                        null
-                    }
-                }.toMap()
-
-            val serialized = try {
-                //OABX.toSerialized(OABX.prefsSerializer, prefs)
-                toSimpleFormat(prefs)
-            } catch (e: Throwable) {
-                LogsHandler.unexpectedException(e)
-                ""
-            }
-
-            return serialized
-        }
-
-        fun preferencesFromSerialized(serialized: String) {
-
-            val prefs = fromSimpleFormat(serialized)
-            //OABX.fromSerialized<Map<String, Any>>(serialized)
-
-            synchronized(Pref) { lockedActions++ }
-            prefs.forEach { (key, value) ->
-                when (value) {
-                    is String  -> setPrefString(key, value)
-                    is Int     -> setPrefInt(key, value)
-                    is Boolean -> setPrefFlag(key, value)
-                }
-            }
-            synchronized(Pref) { lockedActions-- }
-        }
-    }
-
-    init {
-        try {
-            val (g, k) = key.split(".", limit = 2)
-            if (k.isNotEmpty()) {
-                group = g
-                key = k
-            }
-        } catch (e: Throwable) {
-            // ignore
-        }
-        //Timber.d("add pref $group - $key")
-
-        prefGroups.getOrPut(group) { mutableListOf() }.add(this)
-    }
-
-    override fun toString(): String = ""
-}
-
-// keep all other Pref classes final, because they are used in when clauses
-// and derived classes would need to come first, which is worth more than the savings
-
-class BooleanPref(
-    key: String,
-    private: Boolean = false,
-    defaultValue: Boolean,
-    @StringRes summaryId: Int = -1,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-) : Pref(
-    key = key,
-    private = private,
-    defaultValue = defaultValue,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-) {
-    var state: Boolean? by mutableStateOf(null)
-    var value: Boolean
-        get() {
-            if (state == null)
-                state = prefFlag(key, defaultValue as Boolean, private)
-            return state!!
-        }
-        set(value) {
-            state = value
-            setPrefFlag(key, value, private)
-        }
-
-    override fun toString(): String = value.toString()
-}
-
-class IntPref(
-    key: String,
-    private: Boolean = false,
-    defaultValue: Int,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    @StringRes summaryId: Int = -1,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    val entries: List<Int>,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-) : Pref(
-    key = key,
-    private = private,
-    defaultValue = defaultValue,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-) {
-    var state: Int? by mutableStateOf(null)
-    var value: Int
-        get() {
-            if (state == null)
-                state = prefInt(key, defaultValue as Int, private)
-            return state!!
-        }
-        set(value) {
-            state = value
-            setPrefInt(key, value, private)
-        }
-
-    override fun toString(): String = value.toString()
-}
-
-open class StringPref(
-    key: String,
-    private: Boolean = false,
-    defaultValue: String,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    @StringRes summaryId: Int = -1,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-) : Pref(
-    key = key,
-    private = private,
-    defaultValue = defaultValue,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-) {
-    var state: String? by mutableStateOf(null)
-    var value: String
-        get() {
-            if (state == null)
-                state = prefString(key, defaultValue as String, private)
-            return state!!
-        }
-        set(value) {
-            state = value
-            setPrefString(key, value, private)
-        }
-
-    override fun toString(): String = value.toString()
-}
-
-class PasswordPref(
-    key: String,
-    private: Boolean = true,
-    defaultValue: String,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    @StringRes summaryId: Int = -1,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-) : StringPref(
-    key = key,
-    private = private,
-    defaultValue = defaultValue,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-)
-
-
-class ListPref(
-    key: String,
-    private: Boolean = false,
-    defaultValue: String,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    @StringRes summaryId: Int = -1,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    val entries: Map<String, String>,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-) : StringPref(
-    key = key,
-    private = private,
-    defaultValue = defaultValue,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-)
-
-
-class EnumPref(
-    key: String,
-    private: Boolean = false,
-    defaultValue: Int,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    @StringRes summaryId: Int = -1,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    val entries: Map<Int, Int>,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-) : Pref(
-    key = key,
-    private = private,
-    defaultValue = defaultValue,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-) {
-    var state: Int? by mutableStateOf(null)
-    var value: Int
-        get() {
-            if (state == null)
-                state = prefInt(key, defaultValue as Int, private)
-            return state!!
-        }
-        set(value) {
-            state = value
-            setPrefInt(key, value, private)
-        }
-
-    override fun toString(): String = value.toString()
-}
-
-
-class LinkPref(
-    key: String,
-    private: Boolean = false,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    @StringRes summaryId: Int = -1,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-) : Pref(
-    key = key,
-    private = private,
-    defaultValue = null,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-)
-
-
-class LaunchPref(
-    key: String,
-    private: Boolean = false,
-    @StringRes titleId: Int = -1,
-    summary: String? = null,
-    @StringRes summaryId: Int = -1,
-    icon: ImageVector? = null,
-    iconTint: Color? = null,
-    enableIf: (() -> Boolean)? = null,
-    onChanged: ((Pref) -> Unit)? = null,
-    val onClick: () -> Unit = {},
-) : Pref(
-    key = key,
-    private = private,
-    defaultValue = null,
-    titleId = titleId,
-    summary = summary,
-    summaryId = summaryId,
-    icon = icon,
-    iconTint = iconTint,
-    enableIf = enableIf,
-    onChanged = onChanged
-)
+                           
