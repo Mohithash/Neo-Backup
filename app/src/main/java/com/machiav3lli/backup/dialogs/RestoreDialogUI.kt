@@ -19,7 +19,7 @@
 package com.machiav3lli.backup.dialogs
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.machiav3lli.backup.MODE_APK
@@ -33,3 +33,21 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.possibleSchedModes
 
+@Composable
+fun useBackupModeState(): MutableState<Int> {
+    return remember { mutableStateOf(MODE_UNSET) }
+}
+
+@Composable
+fun useSchedModesState(): List<String> {
+    return remember { possibleSchedModes }
+}
+
+@Composable
+fun usePackageState(): MutableState<Package?> {
+    return remember { mutableStateOf(null) }
+}
+
+@Composable
+fun useBackupState(): MutableState<Backup?> {
+    return remember
