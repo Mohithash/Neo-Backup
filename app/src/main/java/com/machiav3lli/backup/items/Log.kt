@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.OABX
@@ -31,48 +32,29 @@ import java.time.LocalDateTime
 open class Log {
     @OptIn(ExperimentalSerializationApi::class)
     @Serializable(with = LocalDateTimeSerializer::class)
-    var logDate: LocalDateTime = LocalDateTime.parse("2020-01-01T00:00:00")
-        private set
+    private var logDate: LocalDateTime = LocalDateTime.parse("2020-01-01T00:00:00")
 
-    var deviceName: String = ""
+    private var deviceName: String = ""
 
-    var sdkCodename: String = ""
+    private var sdkCodename: String = ""
 
-    var cpuArch: String = ""
+    private var cpuArch: String = ""
 
-    var logText: String = ""
+    private var logText: String = ""
 
     constructor(text: String, date: LocalDateTime) {
         this.logDate = date
-        this.deviceName = android.os.Build.DEVICE
-        this.sdkCodename = android.os.Build.VERSION.RELEASE
-        this.cpuArch = android.os.Build.SUPPORTED_ABIS[0]
+        this.deviceName = requireNotNull(android.os.Build.DEVICE)
+        this.sdkCodename = requireNotNull(android.os.Build.VERSION.RELEASE)
+        this.cpuArch = requireNotNull(android.os.Build.SUPPORTED_ABIS[0])
         this.logText = text
     }
 
+    @Throws(FileNotFoundException::class, IOException::class)
     constructor(logFile: StorageFile) {
-        try {
-            logFile.inputStream()!!.use { inputStream ->
-                val text = inputStream.reader().readText()
-                //initFromSerialized(text) ||
-                initFromText(text) ||
-                        throw Backup.BrokenBackupException(
-                            "$logFile is neither ${OABX.propsSerializer.javaClass.simpleName} nor text header format"
-                        )
-            }
-        } catch (e: FileNotFoundException) {
-            throw Backup.BrokenBackupException(
-                "Cannot open $logFile",
-                e
-            )
-        } catch (e: IOException) {
-            throw Backup.BrokenBackupException(
-                "Cannot read $logFile",
-                e
-            )
-        } catch (e: Throwable) {
-            LogsHandler.unexpectedException(e, logFile)
-            throw Backup.BrokenBackupException("Unable to process $logFile. (${e.javaClass.canonicalName}) $e")
+        requireNotNull(logFile).inputStream().use { inputStream ->
+            val text = inputStream.reader().readText()
+            initFromText(text)
         }
     }
 
@@ -91,38 +73,30 @@ open class Log {
         return logFile?.delete()
     }
 
-    fun initFromText(text: String): Boolean {
+    private fun initFromText(text: String): Boolean {
         return try {
             var valid = false
             val lines = text.lines().toMutableList()
             while (lines.isNotEmpty()) {
-                val line = lines.removeAt(0)
+                val line = lines.removeAt(0).trim()
                 if (line.isBlank()) {
                     this.logText = lines.joinToString("\n")
                     lines.clear()
                 } else {
-                    try {
-                        val (field, value) = line.split(Regex(""":\s*"""), limit = 2)
-                        when (field) {
-                            "logDate"     -> {  // minimum data we need
-                                this.logDate = LocalDateTime.parse(value)
-                                valid = true
-                            }
-                            "deviceName"  -> {
-                                this.deviceName = value
-                            }
-                            "sdkCodename" -> {
-                                this.sdkCodename = value
-                            }
-                            "cpuArch"     -> {
-                                this.cpuArch = value
-                            }
+                    val (field, value) = line.split(": ", limit = 2)
+                    when (field) {
+                        "logDate" -> {
+                            this.logDate = LocalDateTime.parse(value)
+                            valid = true
                         }
-                    } catch (e: Throwable) {
-                        if (valid) {
-                            // be tolerant, first non-header line, read remaining lines as text
-                            this.logText = lines.joinToString("\n")
-                            lines.clear()
+                        "deviceName" -> {
+                            this.deviceName = value
+                        }
+                        "sdkCodename" -> {
+                            this.sdkCodename = value
+                        }
+                        "cpuArch" -> {
+                            this.cpuArch = value
                         }
                     }
                 }
@@ -140,21 +114,4 @@ open class Log {
         sdkCodename: $sdkCodename
         cpuArch: $cpuArch
     """.trimIndent() + "\n\n" + logText
-
-    //fun initFromSerialized(text: String): Boolean {
-    //    return fromSerialized(text)?.let { item ->
-    //        this.logDate = item.logDate
-    //        this.deviceName = item.deviceName
-    //        this.sdkCodename = item.sdkCodename
-    //        this.cpuArch = item.cpuArch
-    //        this.logText = item.logText
-    //        true
-    //    } ?: false
-    //}
-    //
-    //fun toSerialized() = OABX.propsSerializer.encodeToString(this)
-    //
-    //companion object {
-    //    fun fromSerialized(serialized: String) = runCatching { OABX.propsSerializer.decodeFromString<Log>(serialized) }.getOrNull()
-    //}
 }
