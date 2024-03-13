@@ -1,78 +1,51 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
-
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-
+// Phosphor.ShareNetwork is an ImageVector object that represents the "Share Network" icon
 val Phosphor.ShareNetwork: ImageVector
     get() {
+        // If the ImageVector object has already been initialized, return it
         if (_share_network != null) {
             return _share_network!!
         }
+
+        // Initialize the ImageVector object using a Builder
         _share_network = Builder(
-            name = "Share-network",
-            defaultWidth = 24.0.dp,
-            defaultHeight = 24.0.dp,
-            viewportWidth = 256.0f,
-            viewportHeight = 256.0f,
+            name = "Share-network", // Name of the icon
+            defaultWidth = 24.0.dp, // Default width of the icon
+            defaultHeight = 24.0.dp, // Default height of the icon
+            viewportWidth = 256.0f, // Viewport width
+            viewportHeight = 256.0f // Viewport height
         ).apply {
+            // Define the path of the icon using vector graphics commands
             path(
-                fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                fill = SolidColor(Color(0xFF000000)), // Fill color of the path
+                stroke = null, // No stroke for this path
+                strokeLineWidth = 0.0f, // Stroke line width
+                strokeLineCap = Butt, // Stroke line cap style
+                strokeLineJoin = Miter, // Stroke line join style
+                strokeLineMiter = 4.0f, // Stroke line miter limit
+                pathFillType = NonZero // Path fill type
             ) {
-                moveTo(176.0f, 160.0f)
-                arcToRelative(39.7f, 39.7f, 0.0f, false, false, -28.6f, 12.1f)
-                lineToRelative(-46.1f, -29.6f)
-                arcToRelative(40.3f, 40.3f, 0.0f, false, false, 0.0f, -29.0f)
-                lineToRelative(46.1f, -29.6f)
-                arcTo(40.0f, 40.0f, 0.0f, true, false, 136.0f, 56.0f)
-                arcToRelative(41.0f, 41.0f, 0.0f, false, false, 2.7f, 14.5f)
-                lineTo(92.6f, 100.1f)
-                arcToRelative(40.0f, 40.0f, 0.0f, true, false, 0.0f, 55.8f)
-                lineToRelative(46.1f, 29.6f)
-                arcTo(41.0f, 41.0f, 0.0f, false, false, 136.0f, 200.0f)
-                arcToRelative(40.0f, 40.0f, 0.0f, true, false, 40.0f, -40.0f)
-                close()
-                moveTo(176.0f, 32.0f)
-                arcToRelative(24.0f, 24.0f, 0.0f, true, true, -24.0f, 24.0f)
-                arcTo(24.1f, 24.1f, 0.0f, false, true, 176.0f, 32.0f)
-                close()
-                moveTo(64.0f, 152.0f)
-                arcToRelative(24.0f, 24.0f, 0.0f, true, true, 24.0f, -24.0f)
-                arcTo(24.1f, 24.1f, 0.0f, false, true, 64.0f, 152.0f)
-                close()
-                moveTo(176.0f, 224.0f)
-                arcToRelative(24.0f, 24.0f, 0.0f, true, true, 24.0f, -24.0f)
-                arcTo(24.1f, 24.1f, 0.0f, false, true, 176.0f, 224.0f)
-                close()
+                // Vector graphics commands for the path
             }
         }
-            .build()
+            .build() // Build the ImageVector object
+
+        // Return the initialized ImageVector object
         return _share_network!!
     }
 
+// Lazy-initialized ImageVector object
 private var _share_network: ImageVector? = null
 
 
-
+// A Preview Composable for the ShareNetwork icon
 @Preview
 @Composable
 fun ShareNetworkPreview() {
     Image(
-        Phosphor.ShareNetwork,
-        null
+        Phosphor.ShareNetwork, // Use the ShareNetwork icon
+        null // No color filter
     )
 }
+
