@@ -17,68 +17,71 @@ import com.machiav3lli.backup.ui.item.PasswordPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
 
-@Composable // Indicates that this function can be used in a Composable context
+@Composable
 fun PrefsBuilder(
-    pref: Pref, // The preference object to be displayed
-    onDialogPref: (Pref) -> Unit, // Function to be called when a preference dialog is opened
-    index: Int, // The index of the current preference in the list
-    size: Int, // The total number of preferences in the list
+    pref: Pref?,
+    onDialogPref: ((Pref) -> Unit)?,
+    index: Int,
+    size: Int,
 ) {
-    when (pref) { // Switch statement to handle different types of preferences
+    pref ?: return
+    onDialogPref ?: return
 
-        // order from derived to base classes (otherwise base would obscure derived)
+    lateinit var currentPref: Pref
 
-        is LaunchPref -> LaunchPreference( // Display a LaunchPreference
-            pref = pref,
-            summary = pref.summary, // Use the summary provided with the preference
+    when (currentPref = pref) {
+        is LaunchPref -> LaunchPreference(
+            pref = currentPref,
+            summary = currentPref.summary,
             index = index,
             groupSize = size,
-            onClick = pref.onClick
+            onClick = currentPref.onClick
         )
 
-        is EnumPref -> EnumPreference( // Display an EnumPreference
-            pref = pref,
+        is EnumPref -> EnumPreference(
+            pref = currentPref,
             index = index,
             groupSize = size,
         ) {
-            onDialogPref(pref) // Call onDialogPref when the dialog is opened
+            onDialogPref(currentPref)
         }
 
-        is ListPref -> ListPreference( // Display a ListPreference
-            pref = pref,
+        is ListPref -> ListPreference(
+            pref = currentPref,
             index = index,
             groupSize = size,
         ) {
-            onDialogPref(pref) // Call onDialogPref when the dialog is opened
+            onDialogPref(currentPref)
         }
 
-        is PasswordPref -> PasswordPreference( // Display a PasswordPreference
-            pref = pref,
+        is PasswordPref -> PasswordPreference(
+            pref = currentPref,
             index = index,
             groupSize = size,
         ) {
-            onDialogPref(pref) // Call onDialogPref when the dialog is opened
+            onDialogPref(currentPref)
         }
 
-        is StringPref -> StringPreference( // Display a StringPreference
-            pref = pref,
+        is StringPref -> StringPreference(
+            pref = currentPref,
             index = index,
             groupSize = size,
         ) {
-            onDialogPref(pref) // Call onDialogPref when the dialog is opened
+            onDialogPref(currentPref)
         }
 
-        is IntPref -> IntPreference( // Display an IntPreference
-            pref = pref,
-            index = index,
-            groupSize = size,
-        )
-
-        is BooleanPref -> BooleanPreference( // Display a BooleanPreference
-            pref = pref,
+        is IntPref -> IntPreference(
+            pref = currentPref,
             index = index,
             groupSize = size,
         )
 
+        is BooleanPref -> BooleanPreference(
+            pref = currentPref,
+            index = index,
+            groupSize = size,
+        )
     }
 }
+
+const val SUMMARY_KEY = "summary"
