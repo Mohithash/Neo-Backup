@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
@@ -36,7 +37,9 @@ import com.machiav3lli.backup.ui.item.Pref
 @Composable
 fun BatchPrefsSheet(backupBoolean: Boolean) {
     // Get the list of preference groups based on the boolean value
-    val prefs = Pref.prefGroups[if (backupBoolean) "srv-bkp" else "srv-rst"] ?: listOf()
+    val prefs = remember(backupBoolean) {
+        Pref.prefGroups[if (backupBoolean) "srv-bkp" else "srv-rst"] ?: listOf()
+    }
 
     // Create a LazyColumn to display the preference groups
     LazyColumn(
@@ -48,9 +51,8 @@ fun BatchPrefsSheet(backupBoolean: Boolean) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Add a single item to the column, which is a PrefsGroup
-        item {
-            PrefsGroup(prefs = prefs)
+        items(prefs.size, key = { it }) {
+            PrefsGroup(prefs = prefs.take(it + 1))
         }
     }
 }
-
