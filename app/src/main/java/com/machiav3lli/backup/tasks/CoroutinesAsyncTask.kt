@@ -15,17 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.tasks
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-/* adapted from with small changes to fit our usage:
- * https://github.com/ladrahul25/CoroutineAsyncTask/blob/master/app/src/main/java/com/example/background/CoroutinesAsyncTask.kt
- */
 abstract class CoroutinesAsyncTask<Params, Progress, Result> {
 
     enum class Status {
@@ -35,6 +32,7 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
     }
 
     var status: Status = Status.PENDING
+    private var job: Job? = null
     abstract fun doInBackground(vararg params: Params?): Result?
     open fun onProgressUpdate(vararg values: Progress?) {}
     open fun onPostExecute(result: Result?) {}
@@ -44,24 +42,18 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
 
     fun execute(vararg params: Params) {
         when (status) {
-            Status.RUNNING -> throw IllegalStateException("Cannot execute task:${this.javaClass.name} the task is already running.")
+            Status.RUNNING -> throw IllegalStateException("Cannot execute task: ${this.javaClass.name} the task is already running.")
             Status.FINISHED -> throw IllegalStateException("Cannot execute task: ${this.javaClass.name}"
                     + " the task has already been executed (a task can be executed only once)")
             Status.PENDING -> status = Status.RUNNING
         }
 
-        // it can be used to setup UI - it should have access to Main Thread
-        GlobalScope.launch(Dispatchers.Main) {
-            onPreExecute()
-        }
+        onPreExecute()
 
-        // doInBackground works on background thread(default)
-        GlobalScope.launch(Dispatchers.Default) {
+        job = CoroutineScope(Dispatchers.Default).launch {
             val result = doInBackground(*params)
             status = Status.FINISHED
-            withContext(Dispatchers.Main) {
-                // onPostExecute works on main thread to show output
-                Timber.d("after do in back ${status.name}--$isCancelled")
+            CoroutineScope(Dispatchers.Main).launch {
                 if (!isCancelled) {
                     onPostExecute(result)
                 }
@@ -71,18 +63,13 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
 
     fun cancel(mayInterruptIfRunning: Boolean) {
         isCancelled = true
-        status = Status.FINISHED
-        GlobalScope.launch(Dispatchers.Main) {
-            // onPostExecute works on main thread to show output
-            Timber.d("after cancel ${status.name}--$isCancelled")
-            onPostExecute(null)
-        }
+        job?.cancel()
+        onCancelled(null)
     }
 
     fun publishProgress(vararg progress: Progress) {
-        //need to update main thread
-        GlobalScope.launch(Dispatchers.Main) {
-            if (!isCancelled) {
+        if (!isCancelled) {
+            CoroutineScope(Dispatchers.Main).launch {
                 onProgressUpdate(*progress)
             }
         }
