@@ -2,7 +2,15 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
 // Import statements
-
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.ImageVector.Builder
+import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.unit.dp
 
 // Phosphor class with X property for the X-mark icon
 class Phosphor {
@@ -24,8 +32,8 @@ class Phosphor {
                 // Path for the X-mark icon
                 path(
                     fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    strokeLineCap = StrokeCap.Butt, strokeLineJoin = StrokeJoin.Miter, strokeLineMiter = 4.0f,
+                    pathFillType = PathFillType.NonZero
                 ) {
                     moveTo(205.7f, 194.3f) // Starting point for the first line
                     arcToRelative(8.1f, 8.1f, 0.0f, false, true, 0.0f, 11.4f) // Curve for the first line
@@ -52,6 +60,4 @@ class Phosphor {
     private var _x: ImageVector? = null
 
 
-    // Preview function for the X-mark icon
-    @Preview
-    @Composable
+    //
