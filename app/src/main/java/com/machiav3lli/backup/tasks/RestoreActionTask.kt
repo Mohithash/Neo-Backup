@@ -21,6 +21,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.tasks
 
 import com.machiav3lli.backup.activities.MainActivityX
@@ -31,21 +32,26 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 
 class RestoreActionTask(
-    appInfo: Package, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
-    private val backup: Backup, setInfoBar: (String) -> Unit,
+    appInfo: Package,
+    oAndBackupX: MainActivityX,
+    shellHandler: ShellHandler,
+    restoreMode: Int,
+    private val backup: Backup,
 ) : BaseActionTask(
     appInfo, oAndBackupX, shellHandler, restoreMode,
-    BackupRestoreHelper.ActionType.RESTORE, setInfoBar
+    BackupRestoreHelper.ActionType.RESTORE
 ) {
+
+    private lateinit var mainActivityXReference: MainActivityX
+
+    init {
+        mainActivityXReference = oAndBackupX
+    }
 
     // Overriding the doInBackground method from the BaseActionTask class
     override fun doInBackground(vararg params: Void?): ActionResult? {
-        // Getting the MainActivityX reference and checking if it's not null or finishing
-        val mainActivityX = mainActivityXReference.get()
-        if (mainActivityX == null || mainActivityX.isFinishing) {
-            // If it's null or finishing, return an ActionResult with an empty result message
-            return ActionResult(app, backup, "", false)
-        }
+        // Getting the MainActivityX reference
+        val mainActivityX = mainActivityXReference.also { if (it.isFinishing) return ActionResult(app, backup, "", false) }
 
         // Setting the notification ID and publishing progress
         notificationId = System.currentTimeMillis().toInt()
@@ -53,8 +59,12 @@ class RestoreActionTask(
 
         // Calling the BackupRestoreHelper's restore method to perform the actual restore operation
         result = BackupRestoreHelper.restore(
-            mainActivityX, null, shellHandler,
-            app, mode, backup
+            mainActivityX,
+            null,
+            shellHandler,
+            app,
+            mode,
+            backup
         )
 
         // Return the ActionResult containing the result of the restore operation
