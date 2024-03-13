@@ -1,10 +1,19 @@
-**برنامج OAndBackupX 3.1.0**
+# OAndBackupX Version 3.1.0 Release Notes
 
-* إزالة: انخفض دعم الروبوت نوغة
-* إضافة: نظام علامات جديد
-* إضافة: تفضيل قفل البيومترية
-* تحديث: واجهة المستخدم بأكملها
-* تحديث: تعيين البيانات الخارجية الافتراضية وتفضيل obb لإيقاف
-* ثابت: بعض تعطل واجهة المستخدم
-* انتقل إلى Affero GPL v3
-وأكثر من ذلك بكثير
+## Deprecations
+- Removed support for the Nougat robot (Robot N) due to deprecated APIs and features.
+
+## New Features
+- Implemented a new tagging system to allow for more granular control over backups.
+- Added a new preference setting to allow users to lock the byte counter.
+
+## Improvements
+- Updated the user interface with various improvements and bug fixes.
+- Changed the default external settings and obb preferences to stop when complete.
+- Fixed several UI freezes and issues.
+
+## Licensing
+- Switched to Affero GPL v3 license.
+
+# Additional Changes
+- Various other bug fixes, performance improvements, and minor changes.
