@@ -10,59 +10,61 @@ import java.util.*
 
 class Try_locales {
 
+    // This test function is used to test the language change functionality
     @Test
     fun test_language() {
 
+        // Get the application configuration
         val appConfig = OABX.context.resources.configuration
 
+        // Get the instrumentation context and its configuration
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val config = context.resources.configuration
 
+        // A function to print the current locales
         fun showLocales() {
             println("Locale.getDefault: ${Locale.getDefault()}")
             println("appLocale: ${appConfig.locales[0]}")
             println("locale: ${config.locales[0]}")
         }
 
-        var sysLocale: Locale? = null
+        var sysLocale: Locale? = null // A variable to store the system locale
 
+        // A function to set the language
         fun setLanguage(language: String): Configuration {
 
-            val config = context.resources.configuration
+            val config = context.resources.configuration // Get the configuration
 
-            println("----- setLanguage '$language' $config")
+            println("----- setLanguage '$language' $config") // Print the configuration
 
             if (sysLocale == null)
-                sysLocale = config.locales[0]
+                sysLocale = config.locales[0] // If sysLocale is null, set it to the current locale
 
-            var setLocalCode = language
-            if (setLocalCode == PREFS_LANGUAGES_SYSTEM) {
-                setLocalCode = sysLocale?.language ?: Locale.US.language
+            var setLocalCode = language // Set the local code to the input language
+            if (setLocalCode == PREFS_LANGUAGES_SYSTEM) { // If the language is system language
+                setLocalCode = sysLocale?.language ?: Locale.US.language // Set the local code to the system language or US language if sysLocale is null
             }
 
-            val newLocale = context.getLocaleOfCode(setLocalCode)
-            config.setLocale(newLocale)
-            Locale.setDefault(newLocale)
+            val newLocale = context.getLocaleOfCode(setLocalCode) // Get the new locale
+            config.setLocale(newLocale) // Set the new locale
+            Locale.setDefault(newLocale) // Set the default locale
 
-            return config
+            return config // Return the configuration
         }
 
-        showLocales()
+        showLocales() // Print the current locales
 
-        setLanguage("de_DE")
+        setLanguage("de_DE") // Set the language to German (Germany)
 
-        showLocales()
+        showLocales() // Print the current locales
 
-        setLanguage(PREFS_LANGUAGES_SYSTEM)
+        setLanguage(PREFS_LANGUAGES_SYSTEM) // Set the language to the system language
 
-        showLocales()
+        showLocales() // Print the current locales
 
-        setLanguage("en_US")
+        setLanguage("en_US") // Set the language to English (US)
 
-        showLocales()
+        showLocales() // Print the current locales
 
-        setLanguage("en_DE")
+        setLanguage("en_DE") // Set the language to English (Germany)
 
-        showLocales()
-    }
-}
