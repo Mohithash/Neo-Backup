@@ -5,7 +5,6 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import androidx.compose.ui.test.onFirst
 import timber.log.Timber
 
 fun ComposeContentTestRule.waitUntilNodeCount(
@@ -23,7 +22,7 @@ fun ComposeContentTestRule.waitUntilExists(
     matcher: SemanticsMatcher,
     timeoutMillis: Long = 1_000L
 ) {
-    return this.waitUntilNodeCount(matcher, 1, timeoutMillis)
+    waitUntilNodeCount(matcher, 1, timeoutMillis)
 }
 
 @OptIn(ExperimentalTestApi::class)
@@ -31,7 +30,7 @@ fun ComposeContentTestRule.waitUntilDoesNotExist(
     matcher: SemanticsMatcher,
     timeoutMillis: Long = 1_000L
 ) {
-    return this.waitUntilNodeCount(matcher, 0, timeoutMillis)
+    waitUntilNodeCount(matcher, 0, timeoutMillis)
 }
 
 fun ComposeContentTestRule.onNodeWait(
@@ -42,25 +41,29 @@ fun ComposeContentTestRule.onNodeWait(
     try {
         this.waitUntil(timeoutMillis) {
             val nodes = this.onAllNodes(matcher)
-            if(nodes.fetchSemanticsNodes().size > 0) {
+            if (nodes.fetchSemanticsNodes().isNotEmpty()) {
                 node = nodes.onFirst()
                 true
-            } else
+            } else {
                 false
+            }
         }
-    } catch(e: ComposeTimeoutException) {
+    } catch (e: ComposeTimeoutException) {
         Timber.d("----------", "Timeout onNodeWait($matcher, $timeoutMillis)")
         return null
     }
     return node
 }
 
+@OptIn(ExperimentalTestApi::class)
 fun ComposeContentTestRule.onNodeWaitOrAssert(
     matcher: SemanticsMatcher,
     timeoutMillis: Long = 1_000L,
     assert: Boolean = false
 ): SemanticsNodeInteraction {
     val node = onNodeWait(matcher, timeoutMillis)
-    return node ?: throw AssertionError("node with (${matcher.description}) does not exist")
+    if (node == null && assert) {
+        throw AssertionError("node with ${matcher.description} does not exist")
+    }
+    return node ?: throw AssertionError("node with ${matcher.description} does not exist")
 }
-
