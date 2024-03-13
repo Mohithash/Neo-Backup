@@ -1,5 +1,11 @@
 /*
- * OAndBackupX: open-source apps backup and restore app.
+ * RestoreActionTask: A class responsible for restoring a backup of an app.
+ * 
+ * This class extends the BaseActionTask and implements the doInBackground method
+ * to perform the actual restore operation. It takes in necessary parameters such
+ * as the Package object, MainActivityX reference, ShellHandler, restore mode,
+ * and the Backup object to be restored.
+ *
  * Copyright (C) 2020  Antonios Hazim
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,17 +38,26 @@ class RestoreActionTask(
     BackupRestoreHelper.ActionType.RESTORE, setInfoBar
 ) {
 
+    // Overriding the doInBackground method from the BaseActionTask class
     override fun doInBackground(vararg params: Void?): ActionResult? {
+        // Getting the MainActivityX reference and checking if it's not null or finishing
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX == null || mainActivityX.isFinishing) {
+            // If it's null or finishing, return an ActionResult with an empty result message
             return ActionResult(app, backup, "", false)
         }
+
+        // Setting the notification ID and publishing progress
         notificationId = System.currentTimeMillis().toInt()
         publishProgress()
+
+        // Calling the BackupRestoreHelper's restore method to perform the actual restore operation
         result = BackupRestoreHelper.restore(
             mainActivityX, null, shellHandler,
             app, mode, backup
         )
+
+        // Return the ActionResult containing the result of the restore operation
         return result
     }
 }
