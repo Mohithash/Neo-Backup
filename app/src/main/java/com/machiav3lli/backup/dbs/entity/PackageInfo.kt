@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.dbs.entity
 
 import android.content.Context
@@ -25,26 +26,26 @@ import androidx.room.PrimaryKey
 import java.io.File
 
 @Entity
-open class PackageInfo(
+data class PackageInfo(
     @PrimaryKey
     var packageName: String,
-    var packageLabel: String = "",
+    var packageLabel: String? = null,
     @ColumnInfo(defaultValue = "-")
-    var versionName: String? = "-",
+    var versionName: String? = null,
     var versionCode: Int = 0,
     var profileId: Int = 0,
     var sourceDir: String? = null,
-    var splitSourceDirs: Array<String> = arrayOf(),
+    var splitSourceDirs: Array<String>? = null,
     var isSystem: Boolean = false,
     var icon: Int = -1,
 ) {
-    open val isSpecial: Boolean
-        get() = false
-
-    constructor(context: Context, pi: android.content.pm.PackageInfo) : this(
+    constructor(
+        context: Context,
+        pi: android.content.pm.PackageInfo
+    ) : this(
         packageName = pi.packageName,
-        packageLabel = pi.applicationInfo.loadLabel(context.packageManager).toString(),
-        versionName = pi.versionName ?: "",
+        packageLabel = pi.applicationInfo.loadLabel(context.packageManager)?.toString(),
+        versionName = pi.versionName,
         versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pi.longVersionCode.toInt()
         else pi.versionCode,
         profileId = try {
@@ -53,7 +54,7 @@ open class PackageInfo(
             -1 // Android System "App" points to /data/system
         },
         sourceDir = pi.applicationInfo.sourceDir,
-        splitSourceDirs = pi.applicationInfo.splitSourceDirs ?: arrayOf(),
+        splitSourceDirs = pi.applicationInfo.splitSourceDirs,
         isSystem = pi.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM == android.content.pm.ApplicationInfo.FLAG_SYSTEM,
         icon = pi.applicationInfo.icon
     )
@@ -61,16 +62,16 @@ open class PackageInfo(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val pkg = other as PackageInfo
-        return packageName == pkg.packageName
-                && this.packageLabel == pkg.packageLabel
-                && this.versionName == pkg.versionName
-                && this.versionCode == pkg.versionCode
-                && this.profileId == pkg.profileId
-                //&& this.sourceDir == pkg.sourceDir
-                //&& this.splitSourceDirs == pkg.splitSourceDirs
-                && this.isSystem == pkg.isSystem
-                && this.icon == pkg.icon
+        other as PackageInfo
+        return packageName == other.packageName
+                && packageLabel == other.packageLabel
+                && versionName == other.versionName
+                && versionCode == other.versionCode
+                && profileId == other.profileId
+                && sourceDir == other.sourceDir
+                && splitSourceDirs.contentEquals(other.splitSourceDirs)
+                && isSystem == other.isSystem
+                && icon == other.icon
     }
 
     override fun hashCode(): Int {
@@ -80,8 +81,14 @@ open class PackageInfo(
         hash = 31 * hash + versionName.hashCode()
         hash = 31 * hash + versionCode.hashCode()
         hash = 31 * hash + profileId.hashCode()
+        hash = 31 * hash + sourceDir.hashCode()
+        hash = 31 * hash + splitSourceDirs.contentHashCode()
         hash = 31 * hash + isSystem.hashCode()
         hash = 31 * hash + icon.hashCode()
         return hash
+    }
+
+    override fun toString(): String {
+        return "PackageInfo(packageName='$packageName', packageLabel=$packageLabel, versionName=$versionName, versionCode=$versionCode, profileId=$profileId, sourceDir=$sourceDir, splitSourceDirs=$splitSourceDirs, isSystem=$isSystem, icon=$icon)"
     }
 }
