@@ -1,28 +1,14 @@
-/*
- * OAndBackupX: open-source apps backup and restore app.
- * Copyright (C) 2020  Antonios Hazim
+/**
+ * Returns a formatted string representing the date and/or time of the given LocalDateTime object.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * @param withTime A boolean flag indicating whether to include the time in the formatted string.
+ * @return A formatted string representing the date and/or time of the given LocalDateTime object.
  */
-package com.machiav3lli.backup.utils
-
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-
 fun LocalDateTime.getFormattedDate(withTime: Boolean): String? {
+    // Create a DateTimeFormatter object based on the input flag
     val dtf = if (withTime) DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
     else DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+    
+    // Format the LocalDateTime object using the DateTimeFormatter object and return the result
     return format(dtf)
 }
