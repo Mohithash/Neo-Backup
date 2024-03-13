@@ -1,19 +1,6 @@
 /*
- * OAndBackupX: open-source apps backup and restore app.
- * Copyright (C) 2020  Antonios Hazim
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * PackageUnInstalledReceiver: A BroadcastReceiver that listens for package
+ * uninstall events and updates the app's database accordingly.
  */
 package com.machiav3lli.backup.services
 
@@ -31,25 +18,29 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-// TODO make main way of refresh & handle new installed and backup list
 class PackageUnInstalledReceiver : BroadcastReceiver() {
 
+    // onReceive method is called when the broadcast is received
     override fun onReceive(context: Context, intent: Intent) {
-        val db = OABX.db
+        val db = OABX.db // Initialize the database
         val packageName =
             intent.data?.let { if (it.scheme == "package") it.schemeSpecificPart else null }
+                    // Extract the package name from the broadcast intent
         if (packageName != null) {
             Package.invalidateSystemCacheForPackage(packageName)
+            // Invalidate the system cache for the package
             when (intent.action.orEmpty()) {
-                Intent.ACTION_PACKAGE_ADDED,
-                Intent.ACTION_PACKAGE_REPLACED,
+                Intent.ACTION_PACKAGE_ADDED, // When a package is added
+                Intent.ACTION_PACKAGE_REPLACED, // When a package is replaced
                 -> {
                     context.packageManager.getPackageInfo(
                         packageName,
                         PackageManager.GET_PERMISSIONS
                     )?.let { packageInfo ->
+                        // Get package info and create an AppInfo object
                         val appInfo = AppInfo(context, packageInfo)
                         GlobalScope.launch(Dispatchers.IO) {
+                            // Insert the AppInfo object into the database
                             db.getAppInfoDao().replaceInsert(appInfo)
                         }
                     }
@@ -57,11 +48,15 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                 Intent.ACTION_PACKAGE_REMOVED -> {
                     GlobalScope.launch(Dispatchers.IO) {
                         val backups = db.getBackupDao().get(packageName)
+                        // Get the backups for the package
                         if (backups.isEmpty())
                             db.getAppInfoDao().deleteAllOf(packageName)
+                        // If there are no backups, delete the AppInfo object
                         else {
                             val appInfo = backups.maxBy { it.backupDate }.toAppInfo()
+                            // Otherwise, get the latest backup and create an AppInfo object
                             db.getAppInfoDao().replaceInsert(appInfo)
+                            // Replace the existing AppInfo object with the new one
                         }
                     }
                 }
@@ -70,6 +65,7 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                 GlobalScope.launch(Dispatchers.IO) {
                     delay(60_0000)
                     supportLog("PackageUnInstalledReceiver")
+                    // Log the PackageUnInstalledReceiver after a delay
                 }
             }
         }
