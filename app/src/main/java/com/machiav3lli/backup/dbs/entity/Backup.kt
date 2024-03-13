@@ -100,9 +100,6 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
     @ColumnInfo(defaultValue = "0")
     var persistent: Boolean = false,
 ) {
-    // TODO WECH
-    // TODO hg42
-
     // A secondary constructor that takes a PackageInfo object and other required parameters
     constructor(
         base: com.machiav3lli.backup.dbs.entity.PackageInfo,
@@ -122,8 +119,8 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
         persistent: Boolean = false,
     ) : this(
         backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
-        packageName = base.packageName,
-        packageLabel = base.packageLabel,
+        packageName = requireNotNull(base.packageName),
+        packageLabel = requireNotNull(base.packageLabel),
         versionName = base.versionName,
         versionCode = base.versionCode,
         profileId = base.profileId,
@@ -137,8 +134,8 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
         hasExternalData = hasExternalData,
         hasObbData = hasObbData,
         hasMediaData = hasMediaData,
-        compressionType = compressionType,
-        cipherType = cipherType,
+        compressionType = compressionType ?: "gz",
+        cipherType = cipherType ?: "",
         iv = iv,
         cpuArch = cpuArch,
         permissions = permissions.sorted(),
@@ -154,19 +151,4 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
     val isEncrypted: Boolean
         get() = cipherType != null && cipherType?.isNotEmpty() == true
 
-    // Flag indicating if the backup has any data (app data, external data, devices protected data, media data, or OBB data)
-    val hasData: Boolean
-        get() = hasAppData || hasExternalData || hasDevicesProtectedData || hasMediaData || hasObbData
-
-    // Function to convert the Backup object to an AppInfo object
-    fun toAppInfo() = AppInfo(
-        packageName,
-        packageLabel,
-        versionName,
-        versionCode,
-        profileId,
-        sourceDir,
-        splitSourceDirs,
-        isSystem,
-        permissions
-   
+    // Flag indicating if the backup has any data
