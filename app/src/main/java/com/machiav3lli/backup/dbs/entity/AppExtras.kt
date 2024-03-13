@@ -1,25 +1,17 @@
-/*
- * OAndBackupX: open-source apps backup and restore app.
- * Copyright (C) 2020  Antonios Hazim
+/**
+ * The `AppExtras` data class represents additional information about an installed app that can be
+ * backed up and restored using the OAndBackupX app.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This class is annotated with `@Entity` to indicate that it is a table in the Room database. The
+ * `packageName` property is the primary key for this table.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * @property packageName The package name of the app. This is the unique identifier for the app and
+ * is used as the primary key for this table.
+ * @property customTags A set of custom tags associated with the app. These tags can be used to
+ * organize and filter apps in the OAndBackupX app.
+ * @property note A note or description about the app. This can be used to provide additional
+ * information about the app or why it is being backed up.
  */
-package com.machiav3lli.backup.dbs.entity
-
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
 @Entity
 data class AppExtras(
     @PrimaryKey
