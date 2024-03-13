@@ -18,23 +18,26 @@
 
 package com.machiav3lli.backup.pages
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.LocalUriHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FillMaxSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -54,46 +57,26 @@ import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.navigation.NavItem
 
 // WelcomePage: Composable function for the welcome page of the Neo Backup app
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomePage() {
     // Get the current context
     val context = LocalContext.current
 
-    // Scaffold: Create a scaffold with transparent background and onSurface text color
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        topBar = {
-            // TopBar: Create a top bar with the app name as the title
-            TopBar(title = stringResource(id = R.string.app_name)) {}
-        },
-        bottomBar = {
-            // Row: Create a row for the bottom bar with an ElevatedActionButton
-            Row(
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .fillMaxWidth()
-                    .navigationBarsPadding(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                ElevatedActionButton(
-                    // ElevatedActionButton: Create an action button with the text "dialog_start" and ArrowRight icon
-                    modifier = Modifier.padding(horizontal = 24.dp),
-                    text = stringResource(id = R.string.dialog_start),
-                    icon = Phosphor.ArrowRight,
-                    // onClick: Start the Permissions destination when the button is clicked
-                    onClick = { (context as MainActivityX).moveTo(NavItem.Permissions.destination) }
-                )
-            }
-        }
-    ) { paddingValues ->
+    // Surface: Create a surface with transparent background and onSurface text color
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
         // Column: Create a column for the main content
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(16.dp)
                 .blockBorder(),
         ) {
+            // TopBar: Create a top bar with the app name as the title
+            TopBar(title = stringResource(id = R.string.app_name)) {}
+
             // LazyColumn: Create a lazy column for the list of links
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -101,27 +84,34 @@ fun WelcomePage() {
                 contentPadding = PaddingValues(8.dp)
             ) {
                 // Item: Create a card for the list of links
-                item {
-                    Card(
+                items(linksList) { link ->
+                    LinkItem(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                        ),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
-                    ) {
-                        // linksList.forEach: Iterate through the list of links and create a LinkItem for each
-                        linksList.forEach {
-                            LinkItem(
-                                item = it,
-                                onClick = { uriString ->
-                                    // onClick: Start an intent with the action VIEW and the uriString when a link is clicked
-                                    context.startActivity(
-                                        Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(uriString)
-                                        )
-                                    )
-                                }
-                            )
-                       
+                        item = link,
+                        weight = 1f,
+                        onClick = { uriString ->
+                            // onClick: Use LocalUriHandler to handle URIs in a more idiomatic way
+                            val uriHandler = LocalUriHandler.current
+                            uriHandler.openUri(uriString)
+                        }
+                    )
+                }
+            }
+
+            // Spacer: Add some space before the bottom bar
+            Spacer(modifier = Modifier.weight(1f))
+
+            // LazyRow: Create a lazy row for the bottom bar with an ElevatedActionButton
+            LazyRow(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                item {
+                    ElevatedActionButton(
+                        // ElevatedActionButton: Create an action button with the text "dialog_start" and ArrowRight icon
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        text = stringResource(id = R.string.dialog_start),
+                        icon =
