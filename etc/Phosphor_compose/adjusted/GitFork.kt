@@ -1,9 +1,13 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
+// This file defines a custom ImageVector object called "GitFork" in the
+// com.machiav3lli.backup.ui.compose.icons.phosphor package.
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+
+// Import necessary classes and functions for creating and displaying the ImageVector.
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
@@ -16,8 +20,12 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// The Phosphor class is used to create the GitFork ImageVector object.
+
 val Phosphor.GitFork: ImageVector
     get() {
+        // This "lazy initialization" checks if the _git_fork object is already initialized.
+        // If it is, the cached object is returned. Otherwise, a new ImageVector object is created.
         if (_git_fork != null) {
             return _git_fork!!
         }
@@ -28,6 +36,7 @@ val Phosphor.GitFork: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the shape of the image using Path commands.
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
@@ -53,32 +62,4 @@ val Phosphor.GitFork: ImageVector
                 arcTo(36.1f, 36.1f, 0.0f, false, false, 224.0f, 68.0f)
                 close()
                 moveTo(48.0f, 68.0f)
-                arcTo(20.0f, 20.0f, 0.0f, true, true, 68.0f, 88.0f)
-                arcTo(20.1f, 20.1f, 0.0f, false, true, 48.0f, 68.0f)
-                close()
-                moveTo(148.0f, 188.0f)
-                arcToRelative(20.0f, 20.0f, 0.0f, true, true, -20.0f, -20.0f)
-                arcTo(20.1f, 20.1f, 0.0f, false, true, 148.0f, 188.0f)
-                close()
-                moveTo(188.0f, 88.0f)
-                arcToRelative(20.0f, 20.0f, 0.0f, true, true, 20.0f, -20.0f)
-                arcTo(20.1f, 20.1f, 0.0f, false, true, 188.0f, 88.0f)
-                close()
-            }
-        }
-            .build()
-        return _git_fork!!
-    }
-
-private var _git_fork: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun GitForkPreview() {
-    Image(
-        Phosphor.GitFork,
-        null
-    )
-}
+                arcTo(20.0f, 20.0f, 0.0f, true, true, 68
