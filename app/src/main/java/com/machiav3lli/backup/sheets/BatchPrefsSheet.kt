@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.sheets
 
 import androidx.compose.foundation.layout.Arrangement
@@ -27,17 +28,29 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.item.Pref
 
+/**
+ * Displays a list of preference groups for backup or restore operations.
+ *
+ * @param backupBoolean A boolean value that determines whether to display backup or restore preferences.
+ */
 @Composable
 fun BatchPrefsSheet(backupBoolean: Boolean) {
+    // Get the list of preference groups based on the boolean value
     val prefs = Pref.prefGroups[if (backupBoolean) "srv-bkp" else "srv-rst"] ?: listOf()
 
+    // Create a LazyColumn to display the preference groups
     LazyColumn(
+        // Fill the maximum available space
         modifier = Modifier.fillMaxSize(),
+        // Add some padding around the column
         contentPadding = PaddingValues(8.dp),
+        // Add some spacing between the preference groups
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        // Add a single item to the column, which is a PrefsGroup
         item {
             PrefsGroup(prefs = prefs)
         }
     }
 }
+
