@@ -1,13 +1,10 @@
-package research
+package com.example.research
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import timber.log.Timber
 
-class Try_trivia {
+class UnitTest {
 
     @Test
-    fun test_test() {
-        assertEquals("", "")
-    }
-}
+
