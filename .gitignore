@@ -1,14 +1,40 @@
+# IDE configuration files
+# These files are used by the IntelliJ IDEA editor to store project-specific settings.
 *.iml
 *.pyc
 *.swp
 *.hprof
+
+# Gradle build files
+# These files are used by the Gradle build system to manage the project's dependencies and build process.
 .gradle
+
+# IntelliJ IDEA project files
+# These files are used by the IntelliJ IDEA editor to store project-specific settings.
 .idea
+
+# Asset files for the Android app
+# These files contain static assets used by the Android app, such as images, fonts, and layout files.
 app/src/main/assets
 assets
+
+# Build output directories
+# These directories contain the output of the build process, including compiled code and packaged resources.
 build/
 app/build
+
+# Local properties file
+# This file contains local properties specific to the development environment, such as the path to the keystore file.
 local.properties
+
+# Native libraries for the Android app
+# These directories contain native libraries used by the Android app, such as .so files.
 app/src/main/jniLibs/
+
+# Release build outputs
+# These directories contain the output of the release build process, including packaged APK files.
 release/
+
+# Neo4j database files
+# These directories contain the data files for a Neo4j database used by the app.
 app/neo/
