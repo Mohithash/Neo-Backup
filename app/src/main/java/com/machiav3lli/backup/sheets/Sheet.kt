@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -12,16 +11,8 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun Sheet(
     onDismissRequest: () -> Unit,
-    //modifier: Modifier,
-    sheetState: SheetState,
-    //shape: Shape,
-    //containerColor: Color,
-    //contentColor: Color,
-    //tonalElevation: Dp,
-    //scrimColor: Color,
-    //dragHandle: @Composable() (() -> Unit)?,
-    //windowInsets: WindowInsets,
     content: @Composable() (ColumnScope.() -> Unit),
+    sheetState: SheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 ) {
     ModalBottomSheet(
         sheetState = sheetState,
@@ -30,6 +21,8 @@ fun Sheet(
         dragHandle = null,
         onDismissRequest = onDismissRequest
     ) {
-        content()
+        ColumnScope {
+            content()
+        }
     }
 }
