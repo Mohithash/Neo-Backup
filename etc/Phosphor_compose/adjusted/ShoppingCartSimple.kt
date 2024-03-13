@@ -1,10 +1,12 @@
 package com.machiav3lli.backup.ui.compose.icons.phosphor
 
-
+// ImageVector interface represents a vector graphic that can be composably rendered
+// in the Android Composable framework.
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
+// SolidColor is a class representing a solid color fill.
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
@@ -16,23 +18,30 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// Define the ShoppingCartSimple ImageVector using the Builder class.
 val Phosphor.ShoppingCartSimple: ImageVector
     get() {
         if (_shopping_cart_simple != null) {
             return _shopping_cart_simple!!
         }
         _shopping_cart_simple = Builder(
-            name = "Shopping-cart-simple",
-            defaultWidth = 24.0.dp,
-            defaultHeight = 24.0.dp,
-            viewportWidth = 256.0f,
-            viewportHeight = 256.0f,
+            name = "Shopping-cart-simple", // Name of the vector graphic
+            defaultWidth = 24.0.dp, // Default width of the vector graphic
+            defaultHeight = 24.0.dp, // Default height of the vector graphic
+            viewportWidth = 256.0f, // Width of the viewport in which the vector graphic is defined
+            viewportHeight = 256.0f // Height of the viewport in which the vector graphic is defined
         ).apply {
+            // Define the path data for the vector graphic using Path DSL.
             path(
-                fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                fill = SolidColor(Color(0xFF000000)), // Fill color for the path
+                stroke = null, // No stroke for this path
+                strokeLineWidth = 0.0f, // Stroke line width
+                strokeLineCap = Butt, // Stroke line cap style
+                strokeLineJoin = Miter, // Stroke line join style
+                strokeLineMiter = 4.0f, // Stroke line miter limit
+                pathFillType = NonZero // Path fill type
             ) {
+                // Path data for the vector graphic
                 moveTo(96.0f, 216.0f)
                 arcToRelative(16.0f, 16.0f, 0.0f, true, true, -16.0f, -16.0f)
                 arcTo(16.0f, 16.0f, 0.0f, false, true, 96.0f, 216.0f)
@@ -56,29 +65,3 @@ val Phosphor.ShoppingCartSimple: ImageVector
                 lineTo(48.3f, 64.0f)
                 lineTo(221.7f, 64.0f)
                 arcToRelative(8.0f, 8.0f, 0.0f, false, true, 7.7f, 10.2f)
-                close()
-                moveTo(211.1f, 80.0f)
-                lineTo(52.9f, 80.0f)
-                lineToRelative(23.5f, 82.2f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 7.7f, 5.8f)
-                horizontalLineToRelative(95.8f)
-                arcToRelative(8.0f, 8.0f, 0.0f, false, false, 7.7f, -5.8f)
-                close()
-            }
-        }
-            .build()
-        return _shopping_cart_simple!!
-    }
-
-private var _shopping_cart_simple: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun ShoppingCartSimplePreview() {
-    Image(
-        Phosphor.ShoppingCartSimple,
-        null
-    )
-}
