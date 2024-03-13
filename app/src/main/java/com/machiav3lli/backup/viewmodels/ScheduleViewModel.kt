@@ -1,3 +1,5 @@
+// Import necessary classes and interfaces
+
 /*
  * OAndBackupX: open-source apps backup and restore app.
  * Copyright (C) 2020  Antonios Hazim
@@ -15,48 +17,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.dbs.dao.ScheduleDao
-import com.machiav3lli.backup.dbs.entity.Schedule
-import com.machiav3lli.backup.traceSchedule
-import com.machiav3lli.backup.utils.cancelAlarm
-import com.machiav3lli.backup.utils.scheduleAlarm
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
+// Define the ScheduleViewModel class, which extends AndroidViewModel
 class ScheduleViewModel(
+    // Inject the required dependencies
     val id: Long,
     private val scheduleDB: ScheduleDao,
 ) : AndroidViewModel(OABX.NB) {
 
+    // Define a StateFlow property for the Schedule entity with the given id
     val schedule: StateFlow<Schedule?> = scheduleDB.getScheduleFlow(id)
-        //TODO hg42 .trace { "*** schedule <<- ${it}" }     // what can here be null? (something is null that is not declared as nullable)
+        //.trace { "*** schedule <<- ${it}" }     // what can here be null? (something is null that is not declared as nullable)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
             Schedule(0)
         )
+
+    // Define a StateFlow property for the custom list related to the Schedule
     val customList = scheduleDB.getCustomListFlow(id)
+
+    // Define a StateFlow property for the block list related to the Schedule
     val blockList = scheduleDB.getBlockListFlow(id)
 
-
+    // Function to update the Schedule and reschedule alarms if necessary
     fun updateSchedule(schedule: Schedule?, rescheduleBoolean: Boolean) {
         viewModelScope.launch {
             schedule?.let { updateS(it, rescheduleBoolean) }
         }
     }
 
+    // Private function to update the Schedule and manage alarms
     private suspend fun updateS(schedule: Schedule, rescheduleBoolean: Boolean) {
         withContext(Dispatchers.IO) {
             scheduleDB.update(schedule)
@@ -74,18 +65,21 @@ class ScheduleViewModel(
         }
     }
 
+    // Function to delete the Schedule
     fun deleteSchedule() {
         viewModelScope.launch {
             deleteS()
         }
     }
 
+    // Private function to delete the Schedule
     private suspend fun deleteS() {
         withContext(Dispatchers.IO) {
             scheduleDB.deleteById(id)
         }
     }
 
+    // Factory class for creating ScheduleViewModel instances
     class Factory(
         private val id: Long, private val scheduleDB: ScheduleDao,
     ) : ViewModelProvider.Factory {
