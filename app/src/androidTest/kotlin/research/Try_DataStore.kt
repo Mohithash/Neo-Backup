@@ -14,132 +14,149 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
 import java.io.IOException
 
+/**
+ * Interface for Preference DataStore operations.
+ */
 interface IPreferenceDataStore {
-    suspend fun <T> getPrefFlow(key: Preferences.Key<T>,defaultValue: T):Flow<T>
-    suspend fun <T> getPref(key: Preferences.Key<T>,defaultValue: T):T
-    suspend fun <T> putPref(key: Preferences.Key<T>, value:T)
-    suspend fun <T> removePref(key: Preferences.Key<T>)
-    suspend fun <T> clearPrefs()
+    suspend fun <T> getPrefFlow(key: Preferences.Key<T>, defaultValue: T): Flow<T> // Returns a flow of data for the given key.
+    suspend fun <T> getPref(key: Preferences.Key<T>, defaultValue: T): T // Returns the current value for the given key.
+    suspend fun <T> putPref(key: Preferences.Key<T>, value: T) // Saves the given value for the given key.
+    suspend fun <T> removePref(key: Preferences.Key<T>) // Removes the value for the given key.
+    suspend fun <T> clearPrefs() // Clears all saved preferences.
 }
 
+/**
+ * Extension function to get the DataStore instance.
+ */
 private val Context.dataStore by preferencesDataStore(
     name = "settings",
 )
 
+/**
+ * Implementation of the IPreferenceDataStore interface.
+ */
 class PreferencesDataStore(): IPreferenceDataStore {
 
-    val store = context.dataStore
+    val store = context.dataStore // DataStore instance.
 
     companion object {
-        val intKey = intPreferencesKey("int")
-        val boolKey = booleanPreferencesKey("bool")
-        val strKey = stringPreferencesKey("str")
+        val intKey = intPreferencesKey("int") // Key for integer preference.
+        val boolKey = booleanPreferencesKey("bool") // Key for boolean preference.
+        val strKey = stringPreferencesKey("str") // Key for string preference.
     }
 
-    /* This returns us a flow of data from DataStore.
-    Basically as soon we update the value in Datastore,
-    the values returned by it also changes. */
-    override suspend fun <T> getPrefFlow(key: Preferences.Key<T>, defaultValue: T):
-            Flow<T> = store.data.catch { exception ->
-        if (exception is IOException){
-            emit(emptyPreferences())
-        }else{
-            throw exception
+    /**
+     * Returns a flow of data for the given key.
+     */
+    override suspend fun <T> getPrefFlow(key: Preferences.Key<T>, defaultValue: T): Flow<T> =
+        store.data.catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences()) // If there's an IOException, emit empty preferences.
+            } else {
+                throw exception // Otherwise, rethrow the exception.
+            }
+        }.map { preferences ->
+            val result = preferences[key] ?: defaultValue // Get the value for the given key or the default value.
+            result
         }
-    }.map { preferences->
-        val result = preferences[key]?: defaultValue
-        result
-    }
 
-    /* This returns the last saved value of the key. If we change the value,
-        it wont effect the values produced by this function */
-    override suspend fun <T> getPref(key: Preferences.Key<T>, defaultValue: T) :
-            T = store.data.first()[key] ?: defaultValue
+    /**
+     * Returns the current value for the given key.
+     */
+    override suspend fun <T> getPref(key: Preferences.Key<T>, defaultValue: T): T =
+        store.data.first()[key] ?: defaultValue // Get the value for the given key or the default value.
 
-    // This Sets the value based on the value passed in value parameter.
+    /**
+     * Saves the given value for the given key.
+     */
     override suspend fun <T> putPref(key: Preferences.Key<T>, value: T) {
         store.edit { preferences ->
-            preferences[key] = value
+            preferences[key] = value // Edit the preferences and save the given value for the given key.
         }
     }
 
-    // This Function removes the Key Value pair from the datastore, hereby removing it completely.
+    /**
+     * Removes the value for the given key.
+     */
     override suspend fun <T> removePref(key: Preferences.Key<T>) {
         store.edit { preferences ->
-            preferences.remove(key)
+            preferences.remove(key) // Edit the preferences and remove the value for the given key.
         }
     }
 
-    // This function clears the entire Preference Datastore.
+    /**
+     * Clears all saved preferences.
+     */
     override suspend fun <T> clearPrefs() {
         store.edit { preferences ->
-            preferences.clear()
+            preferences.clear() // Edit the preferences and clear all saved values.
         }
     }
 }
 
-val prefStore = PreferencesDataStore()
-
+/**
+ * Base class for preference data classes.
+ */
 open class DPref() {
 }
 
+/**
+ * Data class for integer preferences.
+ */
 class DPrefInt(name: String, var default: Int): DPref() {
 
-    val key = intPreferencesKey(name)
+    val key = intPreferencesKey(name) // Preference key.
 
+    /**
+     * Getter for the current preference value.
+     */
     var value
-        get() = runBlocking { prefStore.getPref(key, default) }
-        set(value) = runBlocking { prefStore.putPref(key, value) }
+        get() = runBlocking { prefStore.getPref(key, default) } // Get the value for the given key.
+        set(value) = runBlocking { prefStore.putPref(key, value) } // Save the given value for the given key.
 }
 
+/**
+ * Data class for boolean preferences.
+ */
 class DPrefBoolean(name: String, var default: Boolean): DPref() {
 
-    val key = booleanPreferencesKey(name)
+    val key = booleanPreferencesKey(name) // Preference key.
 
+    /**
+     * Getter for the current preference value.
+     */
     var value
-        get() = runBlocking { prefStore.getPref(key, default) }
-        set(value) = runBlocking { prefStore.putPref(key, value) }
+        get() = runBlocking { prefStore.getPref(key, default) } // Get the value for the given key.
+        set(value) = runBlocking { prefStore.putPref(key, value) } // Save the given value for the given key.
 }
 
+/**
+ * Data class for string preferences.
+ */
 class DPrefString(name: String, var default: String): DPref() {
 
-    val key = stringPreferencesKey(name)
+    val key = stringPreferencesKey(name) // Preference key.
 
+    /**
+     * Getter for the current preference value.
+     */
     var value
-        get() = runBlocking { prefStore.getPref(key, default) }
-        set(value) = runBlocking { prefStore.putPref(key, value) }
+        get() = runBlocking { prefStore.getPref(key, default) } // Get the value for the given key.
+        set(value) = runBlocking { prefStore.putPref(key, value) } // Save the given value for the given key.
 }
 
+/**
+ * Test class for DataStore operations.
+ */
 class Try_DataStore {
 
+    /**
+     * Test method for DataStore operations.
+     */
     @Test
     fun test_Prefs() {
 
-        val int = DPrefInt("int", 123)
-        val bool = DPrefBoolean("bool", false)
-        val str = DPrefString("str", "abc")
-
-        val newInt = 777
-        val newBool = true
-        val newStr = "xyz"
-
-        assert(int.value in listOf(int.default, newInt))
-        assert(bool.value in listOf(bool.default, newBool))
-        assert(str.value in listOf(str.default, newStr))
-
-        int.value = newInt
-        bool.value = newBool
-        str.value = newStr
-
-        assertEquals(newInt, int.value)
-        assertEquals(newBool, bool.value)
-        assertEquals(newStr, str.value)
-
-        runBlocking {
-            println(prefStore.store.data.first().toString())
-        }
-    }
-}
+        val int = DPrefInt("int", 123) // Create a new integer preference.
+       
