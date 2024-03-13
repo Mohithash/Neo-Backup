@@ -13,53 +13,50 @@ import org.junit.Test
 
 class Test_Serialization {
 
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-    //val context = Utils.getDeContext(Utils.getContext())
-    //val context = Utils.getContext()
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    val strings = mapOf(
+    private val strings = mapOf(
         "special" to
                 """test  , \ | $ & " ' ` [ ] ( ) { } = : ; ? < ~ > - + ! % ^ # * """,
         "escaped" to
                 "\u0007\b\u000c\n\r\t\u0012\u001b🎃\uD83C\uDF83",
         "0..32" to
                 (0..32).map { it.toChar() }
-                    //.filter { c -> !(c.code == 0 || c in "\n\r") }
+                    .filter { c -> c.code != 0 && c !in "\n\r" }
                     .joinToString(""),
         "33..127" to
                 (33..127).map { it.toChar() }
-                    //.filter { c -> !(c.isLetterOrDigit() || c == '/') }
+                    .filter { c -> !(c.isLetterOrDigit() || c == '/') }
                     .joinToString(""),
         "128+(0..32)" to
                 (0..32).map { (128 + it).toChar() }
-                    //.filter { c ->
-                    //    !(c.code == 0 ||
-                    //            c.code == 173 ||
-                    //            (c.code.and(127)).toChar() in "\t\n\r "
-                    //            )
-                    //}
+                    .filter { c ->
+                        c.code != 0 &&
+                                c.code != 173 &&
+                                (c.code and 127).toChar() !in "\t\n\r "
+                    }
                     .joinToString(""),
         "128+(33..127)" to
                 (33..127).map { (128 + it).toChar() }
                     .joinToString(""),
     )
 
-    val aMap = mapOf<String, Any>(
+    private val aMap = mapOf<String, Any>(
         "int" to 123,
         "boolean" to false,
     ) + strings
 
     @Serializable
-    data class aClass(val int: Int = 123, val flag: Boolean = false, val str: String = "abc")
+    data class AClass(val int: Int = 123, val flag: Boolean = false, val str: String = "abc")
 
-    val aObj = aClass(int = 456, flag = true, str = "str")
+    private val aObj = AClass(int = 456, flag = true, str = "str")
 
     @TestOnly
     internal fun test_esc(value: String) {
-        val esc = escape(value)
-        println("'$esc'")
-        val unesc = unescape(esc)
-        assertEquals(value, unesc)
+        val escaped = escape(value)
+        println("Escaped: '$escaped'")
+        val unescaped = unescape(escaped)
+        assertEquals(value, unescaped)
     }
 
     @Test
@@ -71,42 +68,41 @@ class Test_Serialization {
 
     @Test
     fun test_simple() {
-        val ser = toSimpleFormat(aMap)
-        println("simple: '\n$ser\n'")
-        val obj = fromSimpleFormat(ser)
-        assertEquals(aMap, obj)
+        val serialized = toSimpleFormat(aMap)
+        println("Simple format:\n$serialized\n")
+        val deserialized = fromSimpleFormat<Map<String, Any>>(serialized)
+        assertEquals(aMap, deserialized)
     }
 
     @Test
     fun test_json_obj() {
-        val ser = OABX.toSerialized(OABX.JsonPretty, aObj)
-        println("json: '\n$ser\n'")
-        val obj = OABX.fromSerialized<aClass>(ser)
-        assertEquals(aObj, obj)
+        val serialized = OABX.toSerialized(OABX.JsonPretty, aObj)
+        println("JSON format:\n$serialized\n")
+        val deserialized = OABX.fromSerialized<AClass>(serialized)
+        assertEquals(aObj, deserialized)
     }
 
     @Test
     fun test_json_map() {
-        val ser = OABX.toSerialized(OABX.JsonPretty, aMap)
-        println("json: '\n$ser\n'")
-        val obj = OABX.fromSerialized<aClass>(ser)
-        assertEquals(aMap, obj)
+        val serialized = OABX.toSerialized(OABX.JsonPretty, aMap)
+        println("JSON format:\n$serialized\n")
+        val deserialized = OABX.fromSerialized<Map<String, Any>>(serialized)
+        assertEquals(aMap, deserialized)
     }
 
     @Test
     fun test_yaml_obj() {
-        val ser = OABX.toSerialized(OABX.YamlDefault, aObj)
-        println("yaml: '\n$ser\n'")
-        val obj = OABX.fromSerialized<aClass>(ser)
-        assertEquals(aObj, obj)
+        val serialized = OABX.toSerialized(OABX.YamlDefault, aObj)
+        println("YAML format:\n$serialized\n")
+        val deserialized = OABX.fromSerialized<AClass>(serialized)
+        assertEquals(aObj, deserialized)
     }
 
     @Test
     fun test_yaml_map() {
-        val ser = OABX.toSerialized(OABX.YamlDefault, aMap)
-        println("yaml: '\n$ser\n'")
-        val obj = OABX.fromSerialized<aClass>(ser)
-        assertEquals(aMap, obj)
+        val serialized = OABX.toSerialized(OABX.YamlDefault, aMap)
+        println("YAML format:\n$serialized\n")
+        val deserialized = OABX.fromSerialized<Map<String, Any>>(serialized)
+        assertEquals(aMap, deserialized)
     }
-
 }
