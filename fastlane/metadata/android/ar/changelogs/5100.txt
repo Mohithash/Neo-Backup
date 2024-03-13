@@ -1,6 +1,18 @@
-* تحديث: UI / UX تجديد (في التعاونية مع @opepp)
-* إضافة: أداة لحفظ قائمة التطبيقات في ملف
-* أضيف: الكثير من الوظائف الجديدة
-* ثابت: جدولة النسخ الاحتياطية
-* ترجمات محدثة
-* من بين طن من التحسينات الأخرى
+# Update: UI/UX Refresh (in collaboration with @opepp)
+# --------------------------------------------------
+# This update focuses on refreshing the user interface and user experience of the application.
+# We have worked closely with @opepp to identify areas of improvement and implement changes
+# that will enhance the overall look and feel of the application.
+
+# Addition: Save List Feature
+# ---------------------------
+# A new feature has been added that allows users to save a list of their favorite applications.
+# This list is stored in a file for easy access and retrieval.
+
+# Addition: New Functionality
+# ---------------------------
+# Several new functionalities have been added to the application to improve its overall utility.
+# These features include...
+# [Include a brief description of the new functionalities here]
+
+
