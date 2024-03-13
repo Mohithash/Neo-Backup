@@ -1,5 +1,19 @@
-package com.machiav3lli.backup.ui.compose.icons.phosphor
+// Phosphor.kt
 
+// This file is a part of the com.machiav3lli.backup.ui.compose.icons.phosphor package.
+
+// The Phosphor class defines an ImageVector named Aperture.
+
+// The Aperture property uses the Builder class to create the vector image with a set of paths defining the shape of an aperture.
+// It first checks if the _aperture variable is initialized, and if so, it returns the cached value.
+// If not, it creates a new ImageVector using the Builder class.
+
+// The Builder class defines a path that represents the shape of the aperture using various pathing commands like moveTo, lineTo, arcTo, and close.
+// The path is filled with a solid color (black in this case) using the SolidColor class.
+
+// The AperturePreview function is a @Composable preview function that displays the Aperture ImageVector using the Image composable function.
+
+package com.machiav3lli.backup.ui.compose.icons.phosphor
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -16,6 +30,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 
+// The Aperture property defines an ImageVector named Aperture using the Builder class.
 val Phosphor.Aperture: ImageVector
     get() {
         if (_aperture != null) {
@@ -28,6 +43,7 @@ val Phosphor.Aperture: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // The path defines the shape of the aperture using various pathing commands.
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
@@ -56,47 +72,4 @@ val Phosphor.Aperture: ImageVector
                 arcToRelative(88.0f, 88.0f, 0.0f, false, true, -2.5f, 72.6f)
                 lineToRelative(-51.2f, -9.4f)
                 close()
-                moveTo(201.3f, 79.3f)
-                lineTo(167.6f, 119.0f)
-                lineToRelative(-28.0f, -78.2f)
-                arcToRelative(86.8f, 86.8f, 0.0f, false, true, 50.6f, 25.0f)
-                arcTo(88.5f, 88.5f, 0.0f, false, true, 201.3f, 79.3f)
-                close()
-                moveTo(122.4f, 40.2f)
-                lineToRelative(17.5f, 49.0f)
-                lineTo(58.3f, 74.3f)
-                arcToRelative(99.2f, 99.2f, 0.0f, false, true, 7.5f, -8.5f)
-                arcTo(87.1f, 87.1f, 0.0f, false, true, 122.4f, 40.2f)
-                close()
-                moveTo(54.7f, 176.7f)
-                lineTo(88.4f, 137.0f)
-                lineToRelative(28.0f, 78.2f)
-                arcToRelative(86.8f, 86.8f, 0.0f, false, true, -50.6f, -25.0f)
-                arcTo(88.5f, 88.5f, 0.0f, false, true, 54.7f, 176.7f)
-                close()
-                moveTo(133.6f, 215.8f)
-                lineTo(116.1f, 166.8f)
-                lineTo(139.1f, 171.0f)
-                horizontalLineToRelative(0.1f)
-                lineToRelative(58.5f, 10.7f)
-                arcToRelative(99.2f, 99.2f, 0.0f, false, true, -7.5f, 8.5f)
-                arcTo(87.1f, 87.1f, 0.0f, false, true, 133.6f, 215.8f)
-                close()
-            }
-        }
-            .build()
-        return _aperture!!
-    }
-
-private var _aperture: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun AperturePreview() {
-    Image(
-        Phosphor.Aperture,
-        null
-    )
-}
+              
