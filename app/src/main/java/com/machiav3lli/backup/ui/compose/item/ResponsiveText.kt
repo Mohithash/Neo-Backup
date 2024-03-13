@@ -14,41 +14,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 
+/**
+ * Constant defining the interval by which the text size is reduced when it doesn't fit the available
+ * space.
+ */
 private const val TEXT_SCALE_REDUCTION_INTERVAL = 0.9f
 
-/**
- * https://medium.com/tech-takeaways/responsive-auto-resizing-text-with-jetpack-compose-b8238aaf0e09
- */
-@Composable
-fun ResponsiveText(
-    modifier: Modifier = Modifier,
-    text: String,
-    color: Color = MaterialTheme.colorScheme.onSurface,
-    textAlign: TextAlign = TextAlign.Center,
-    textStyle: TextStyle,
-    targetTextSizeHeight: TextUnit = textStyle.fontSize,
-    maxLines: Int = 1,
-) {
-    var textSize by remember { mutableStateOf(targetTextSizeHeight) }
-
-    Text(
-        modifier = modifier,
-        text = text,
-        color = color,
-        textAlign = textAlign,
-        fontSize = textSize,
-        fontFamily = textStyle.fontFamily,
-        fontStyle = textStyle.fontStyle,
-        fontWeight = textStyle.fontWeight,
-        lineHeight = textStyle.lineHeight,
-        maxLines = maxLines,
-        overflow = TextOverflow.Ellipsis,
-        onTextLayout = { textLayoutResult ->
-            val maxCurrentLineIndex: Int = textLayoutResult.lineCount - 1
-
-            if (textLayoutResult.isLineEllipsized(maxCurrentLineIndex)) {
-                textSize = textSize.times(TEXT_SCALE_REDUCTION_INTERVAL)
-            }
-        },
-    )
-}
