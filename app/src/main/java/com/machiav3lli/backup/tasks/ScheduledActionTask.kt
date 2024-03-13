@@ -1,47 +1,23 @@
 /*
- * OAndBackupX: open-source apps backup and restore app.
- * Copyright (C) 2020  Antonios Hazim
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * ScheduledActionTask: This class is responsible for fetching a list of installed packages based on the provided filter and custom list settings.
+ * It then filters the package list based on user-defined criteria and returns the filtered package names along with the name and mode of the schedule.
  */
-package com.machiav3lli.backup.tasks
-
-import android.content.Context
-import com.machiav3lli.backup.MODE_UNSET
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.getInstalledPackageList
-import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.FileUtils.ensureBackups
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.filterPackages
-import timber.log.Timber
-
-open class ScheduledActionTask(val context: Context, private val scheduleId: Long) :
+class ScheduledActionTask(val context: Context, private val scheduleId: Long) :
     CoroutinesAsyncTask<Void?, String, Triple<String, List<String>, Int>>() {
 
+    // doInBackground: This method is responsible for performing the background tasks.
     override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
 
+        // Accessing the database and getting the Schedule and Blacklist daos.
         val database = OABX.db
         val scheduleDao = database.getScheduleDao()
         val blacklistDao = database.getBlocklistDao()
 
+        // Retrieving the schedule based on the provided scheduleId
         val schedule = scheduleDao.getSchedule(scheduleId)
             ?: return Triple("DbFailed", listOf(), MODE_UNSET)
 
+        // Extracting the necessary details from the schedule object
         val name = schedule.name
         val filter = schedule.filter
         val specialFilter = schedule.specialFilter
@@ -50,15 +26,10 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
         val blockList = globalBlocklist.plus(customBlocklist)
 
-        //TODO hg42 the whole filter mechanics should be the same for app and service
-
+        // Fetching the list of installed packages and handling exceptions
         val unfilteredPackages: List<Package> = try {
-
-            // findBackups *is* necessary, because it's *not* done in OABX.onCreate any more
-            ensureBackups()
-
-            context.getInstalledPackageList()   // <========================== get the package list
-
+            ensureBackups() // Ensuring backups are available
+            context.getInstalledPackageList() // Fetching the package list
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
@@ -73,6 +44,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             return Triple(name, listOf(), MODE_UNSET)
         }
 
+        // Filtering the package list based on user-defined criteria
         val selectedItems =
             filterPackages(
                 packages = unfilteredPackages,
@@ -82,6 +54,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                 blackList = blockList
             ).map(Package::packageName)
 
+        // Returning the filtered package names along with the name and mode of the schedule
         return Triple(
             name,
             selectedItems,
@@ -89,4 +62,3 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         )
     }
 }
-
