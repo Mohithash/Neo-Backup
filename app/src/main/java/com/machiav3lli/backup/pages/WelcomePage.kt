@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.machiav3lli.backup.pages
 
 import android.annotation.SuppressLint
@@ -52,18 +53,23 @@ import com.machiav3lli.backup.ui.compose.item.LinkItem
 import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.navigation.NavItem
 
+// WelcomePage: Composable function for the welcome page of the Neo Backup app
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomePage() {
+    // Get the current context
     val context = LocalContext.current
 
+    // Scaffold: Create a scaffold with transparent background and onSurface text color
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
+            // TopBar: Create a top bar with the app name as the title
             TopBar(title = stringResource(id = R.string.app_name)) {}
         },
         bottomBar = {
+            // Row: Create a row for the bottom bar with an ElevatedActionButton
             Row(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
@@ -72,25 +78,29 @@ fun WelcomePage() {
                 horizontalArrangement = Arrangement.Center
             ) {
                 ElevatedActionButton(
+                    // ElevatedActionButton: Create an action button with the text "dialog_start" and ArrowRight icon
                     modifier = Modifier.padding(horizontal = 24.dp),
                     text = stringResource(id = R.string.dialog_start),
                     icon = Phosphor.ArrowRight,
-                ) {
-                    (context as MainActivityX).moveTo(NavItem.Permissions.destination)
-                }
+                    // onClick: Start the Permissions destination when the button is clicked
+                    onClick = { (context as MainActivityX).moveTo(NavItem.Permissions.destination) }
+                )
             }
         }
     ) { paddingValues ->
+        // Column: Create a column for the main content
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .blockBorder(),
         ) {
+            // LazyColumn: Create a lazy column for the list of links
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(8.dp)
             ) {
+                // Item: Create a card for the list of links
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -100,10 +110,12 @@ fun WelcomePage() {
                         ),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
                     ) {
+                        // linksList.forEach: Iterate through the list of links and create a LinkItem for each
                         linksList.forEach {
                             LinkItem(
                                 item = it,
                                 onClick = { uriString ->
+                                    // onClick: Start an intent with the action VIEW and the uriString when a link is clicked
                                     context.startActivity(
                                         Intent(
                                             Intent.ACTION_VIEW,
@@ -112,15 +124,4 @@ fun WelcomePage() {
                                     )
                                 }
                             )
-                        }
-                    }
-                }
-                item {
-                    Text(
-                        text = stringResource(id = R.string.intro_welcome_message),
-                    )
-                }
-            }
-        }
-    }
-}
+                       
