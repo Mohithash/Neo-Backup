@@ -1,7 +1,15 @@
-** إصدار رئيسي جديد **: غير متوافق مع الإصدارات القديمة
-** أول إصدار من KOTLIN **
-يمكن للإجراءات المجدولة أن تستغرق 10 دقائق فقط (معوقات النظام)
-* تمت الإضافة: حدد أوضاع التطبيقات في مربع حوار الدُفعات
-* ثابت: إذن التخزين الدائم
-* ثابت: دعم A11
-* الكثير من التحسينات والإصلاحات والتنظيفات الأخرى
+/**
+ * Major release that is not compatible with previous versions.
+ * This is the first release of Kotlin.
+ * Estimated time for the scheduled procedures to complete is 10 minutes (excluding system delays).
+ */
+
+/**
+ * Added: Ability to define application states in the dialog box for payments.
+ */
+const val PERMANENT_STORAGE_PERMISSION = "Permission for permanent storage"
+const val A11_SUPPORT = "Support for A11"
+
+/**
+ * This release includes several improvements, bug fixes, and cleanups.
+ */
