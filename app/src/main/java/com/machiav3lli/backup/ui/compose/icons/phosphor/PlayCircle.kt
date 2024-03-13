@@ -1,26 +1,11 @@
-package com.machiav3lli.backup.ui.compose.icons.phosphor
-
-
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-
+// Define a Phosphor icon called "PlayCircle" using the ImageVector interface
 val Phosphor.PlayCircle: ImageVector
     get() {
+        // If the ImageVector object has already been created, return it
         if (_play_circle != null) {
             return _play_circle!!
         }
+        // Otherwise, create a new ImageVector object using the Builder function
         _play_circle = Builder(
             name = "Play-circle",
             defaultWidth = 24.0.dp,
@@ -28,11 +13,13 @@ val Phosphor.PlayCircle: ImageVector
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
+            // Define the vector path for the icon using the path function
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
+                // Define the shape of the icon using various shapes such as arcs and lines
                 moveTo(128.0f, 24.0f)
                 arcTo(104.0f, 104.0f, 0.0f, true, false, 232.0f, 128.0f)
                 arcTo(104.2f, 104.2f, 0.0f, false, false, 128.0f, 24.0f)
@@ -54,23 +41,4 @@ val Phosphor.PlayCircle: ImageVector
                 close()
                 moveTo(120.0f, 145.1f)
                 lineTo(120.0f, 110.9f)
-                lineTo(145.6f, 128.0f)
-                close()
-            }
-        }
-            .build()
-        return _play_circle!!
-    }
-
-private var _play_circle: ImageVector? = null
-
-
-
-@Preview
-@Composable
-fun PlayCirclePreview() {
-    Image(
-        Phosphor.PlayCircle,
-        null
-    )
-}
+                lineTo(145.6f, 128
