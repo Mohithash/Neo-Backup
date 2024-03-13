@@ -1,43 +1,44 @@
 package research
+
 import com.machiav3lli.backup.handler.ShellHandler
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import timber.log.Timber
 
-class Try_selinux {
+class TrySelinux {
+
+    private val commandLSBdAZ = "toybox ls -bdAZ /"
+    private val commandLSBdAlZ = "toybox ls -bdAlZ /"
+    private val commandStatC = "toybox stat -c '%%U %%G %%C' /"
 
     @Test
-    fun test_ls_bdZ() {
-        val command = "toybox ls -bdAZ /"
-        val shellResult = ShellHandler.runAsRoot(command)
-        val context = shellResult.out[0].split(" ", limit = 2)[0]
-        Timber.i("$command -> '${shellResult.out[0]}' => context = '$context'")
+    fun testLsBdAZ() {
+        val (output, _) = ShellHandler.runAsRoot(commandLSBdAZ)
+        val context = output.split(" ", limit = 2)[0]
+        Timber.i("$commandLSBdAZ -> $output -> context = $context")
 
         assertNotNull(context)
         assertNotEquals("?", context)
     }
 
     @Test
-    fun test_ls_bdlZ() {
-        val command = "toybox ls -bdAlZ /"
-        val shellResult = ShellHandler.runAsRoot(command)
-        val context = shellResult.out[0].split(" ", limit = 6)[4]
-        Timber.i("$command -> '${shellResult.out[0]}' => context = '$context'")
+    fun testLsBdAlZ() {
+        val (output, _) = ShellHandler.runAsRoot(commandLSBdAlZ)
+        val context = output.split(" ", limit = 6)[4]
+        Timber.i("$commandLSBdAlZ -> $output -> context = $context")
 
         assertNotNull(context)
         assertNotEquals("?", context)
     }
 
-    // does nothing ("%C" shows "?")
-    // @Test
-    // fun test_stat_C() {
-    //     val command = "toybox stat -c '%U %G %C' /"
-    //     val shellResult = ShellHandler.runAsRoot(command)
-    //     val context = shellResult.out[0].split(" ", limit = 3)[2]
-    //     Timber.i("$command -> '${shellResult.out[0]}' => context = '$context'")
-    //
-    //     assertNotNull(context)
-    //     assertNotEquals("?", context)
-    // }
+    @Test
+    fun testStatC() {
+        val (output, _) = ShellHandler.runAsRoot(commandStatC)
+        val context = output.split(" ", limit = 3)[2]
+        Timber.i("$commandStatC -> $output -> context = $context")
+
+        assertNotNull(context)
+        assertNotEquals("?", context)
+    }
 }
