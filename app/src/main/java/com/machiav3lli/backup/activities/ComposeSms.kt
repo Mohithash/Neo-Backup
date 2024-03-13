@@ -19,9 +19,25 @@ package com.machiav3lli.backup.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 
 class ComposeSms : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_compose_sms)
+
+        val textView = findViewById<TextView>(R.id.text_view)
+        textView.text = "This is a sample text for ComposeSms activity."
     }
 }
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ComposeSms">
+
+    <TextView
+        android:id="
